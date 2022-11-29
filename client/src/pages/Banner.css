@@ -1,0 +1,126 @@
+/* .banner {
+  color: white;
+  object-fit: contain;
+  height: 80vh;
+}
+.black {
+  color: black;
+}
+.color {
+  display: flex;
+}
+.color_red1 {
+  background-color: #d01926;
+  width: 300px;
+  height: 100vh;
+}
+.color_red2 {
+  background-color: #d01926;
+  width: 300px;
+  height: 100vh;
+  margin-left: 340px;
+}
+.color_red3 {
+  background-color: #d01926;
+  width: 200px;
+  height: 100vh;
+  margin-left: 290px;
+}
+.color_red4 {
+  background-color: #d01926;
+  width: 300px;
+  height: 100vh;
+  margin-left: 190px;
+}
+
+.all-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 60px;
+}
+.banner__contents {
+  padding-top: 140px;
+  height: 100px;
+} */
+/* margin-left: 30px; */
+/* 
+.banner__title {
+  font-size: 2rem;
+  font-weight: 800;
+  padding-bottom: 0.3rem;
+  opacity: 0;
+}
+.all-details {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.banner__description {
+  width: 45rem;
+  text-align-last: left;
+  line-height: 1.3;
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  max-width: 560px;
+  height: 80px;
+  opacity: 1;
+}
+.start__details {
+  display: flex;
+  opacity: 0;
+  padding-top: 20px;
+  align-items: center;
+}
+.start__details h1 {
+  display: flex;
+  margin-left: 20px;
+  font-size: 1.5rem;
+  align-items: center;
+}
+.reviews {
+  display: flex;
+}
+.banner_stars {
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.banner__buttons {
+  padding-top: 100px;
+}
+.banner__button {
+  cursor: pointer;
+  color: white;
+  outline: none;
+  border: none;
+  font-weight: 700;
+  border-radius: 0.2vw;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-right: 1rem;
+  padding-top: 0.5rem;
+  background-color: #d01926;
+  padding-bottom: 0.5rem;
+  opacity: 0;
+}
+
+.banner__button:hover {
+  color: #000;
+  background-color: #e6e6e6;
+  transition: all 0.2s;
+}
+
+
+
+.banner__fadeBottom {
+  height: 100vh;
+  margin-top: -460px;
+  background-image: linear-gradient(
+    -90deg,
+    transparent,
+    rgba(37, 37, 37, 0.438),
+    #111
+  );
+} */
