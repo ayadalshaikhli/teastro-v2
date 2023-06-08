@@ -28,7 +28,7 @@ class List extends Component {
     }
     // Retrieves the list of items from the Express app
     getList = (ayad_mv_api, ayad_yr_api) => {
-        fetch(`/api/getList?moviename=${ayad_mv_api}&movieyear=${ayad_yr_api}`)
+        fetch(`https://react-crud-xcw8.onrender.com/api/getList?moviename=${ayad_mv_api}&movieyear=${ayad_yr_api}`)
             .then(res => res.json())
             .then(list => this.setState({ list }))
     }

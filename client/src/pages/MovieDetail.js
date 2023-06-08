@@ -116,7 +116,7 @@ function MovieDetail({ match }) {
   const fetchQuery = async (movie) => {
     setQueryStatus("GETTING...");
     const theFilm = await fetch(
-      `/api/getList?moviename=${formatHyphen(
+      `https://react-crud-xcw8.onrender.com/api/getList?moviename=${formatHyphen(
         movie.original_title
       )}&movieyear=${formatYear(movie.release_date, 4)}`
     );
@@ -141,7 +141,7 @@ function MovieDetail({ match }) {
     // JSON ERROR TESTING
     console.log("TESTING | data2 \n");
     fetch(
-      `/api/getList?moviename=${formatHyphen(
+      `https://react-crud-xcw8.onrender.com/api/getList?moviename=${formatHyphen(
         movie.original_title
       )}&movieyear=${formatYear(movie.release_date, 4)}`
     ).then(async (response) => {
