@@ -72,7 +72,7 @@ const Mylist = () => {
   // Retrieves the list of items from the Express app
   const getList = async (movieQuery, yearQuery) => {
 
-    const parsedMovieString = await fetch(`/api/getList?moviename=${formatHyphen(movieQuery)}&movieyear=${formatYear(yearQuery)}`)
+    const parsedMovieString = await fetch(`https://react-crud-xcw8.onrender.com/api/getList?moviename=${formatHyphen(movieQuery)}&movieyear=${formatYear(yearQuery)}`)
       .then(res => res.json())
       .then(list => setSearchResults(list))
   }
