@@ -6,7 +6,7 @@
     "start": "node server.js",
     "seed": "node seeds/seed.js",
     "watch": "nodemon server.js",
-    "build": "npm i"
+    "build": "npm i -f"
   },
   "author": "",
   "license": "ISC",
