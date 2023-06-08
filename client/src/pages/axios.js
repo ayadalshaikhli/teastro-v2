@@ -4,8 +4,9 @@ const instance = axios.create({
   baseURL: "https://api.themoviedb.org/3",
   
 });
-console.log(instance);
-instance.get("/foo-bar");
+// console.log("Instance")
+// console.log(instance);
+// instance.get("/foo-bar");
 
 export default instance;
 

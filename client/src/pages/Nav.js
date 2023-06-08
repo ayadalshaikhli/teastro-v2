@@ -30,7 +30,7 @@ function Nav({ fetchUrl }) {
   };
 
   return (
-    <div className={`nav ${show && "nav__black"}`}>
+    <div className={`nav ${show && "nav__black"} px-20`}>
       <div className="logo__links">
         <Link to="/">
           <img
@@ -43,33 +43,28 @@ function Nav({ fetchUrl }) {
         <ul>
           <li>
             <a className="text-decoration-none" href="/">
-              Home
+              TOP CAST
             </a>
           </li>
           <li>
             <a className="text-decoration-none" href="/mylist">
-              My List
+              MOVICES
             </a>
           </li>
           <li>
-            <a className="text-decoration-none" href="/signin">
-              Log In
+            <a className="text-decoration-none" href="/mylist">
+              TV SHOWS
             </a>
           </li>
-          <li>
-            <a className="text-decoration-none" href="/list">
-              List
-            </a>
-          </li>
-          <li>
-            <a className="text-decoration-none" href="/foobar">
-              Foobar
-            </a>
-          </li>
+
         </ul>
       </div>
       <div>
-        <form onSubmit={handleOnSubmit}>
+        
+        <div className="px-4 py-2 bg-red-700 text-white rounded-2xl">
+          Login/ Sign in
+        </div>
+        {/* <form className="bn" onSubmit={handleOnSubmit}>
           <input
             className="search__bar "
             type="search"
@@ -77,7 +72,7 @@ function Nav({ fetchUrl }) {
             value={searchTerm}
             onChange={handleOnChange}
           />
-        </form>
+        </form> */}
       </div>
     </div>
   );

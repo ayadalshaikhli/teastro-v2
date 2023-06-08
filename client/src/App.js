@@ -54,9 +54,7 @@ function App() {
               component={PersonDetail}
               fetchUrlMovie={requests.fetchMovieDetails}
             />
-            <Route exact path="/">
-              <Home />
-            </Route>
+
             <Route path="/signin" exact component={Signin} />
             <Route path="/mylist" exact component={Mylist} />
             <Route path="/puppeteer" exact component={Puppeteer}/>
@@ -74,15 +72,11 @@ function App() {
             <Route exact path="/delete">
               <Delete />
             </Route>
-
-
-
             {/* REE COMPONENTS */}
             <Route exact path='/' component={Home} />
             <Route path='/list' component={List} />
             <Route path='/foobar' component={Foobar} />
             {/* REE END */}
-
             <Route>
               <NotFound />
             </Route>

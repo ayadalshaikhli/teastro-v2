@@ -4,7 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const puppeteer = require('puppeteer');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const cors = require('cors'); // Import the cors package
 
 const { typeDefs, resolvers } = require('./schemas');
@@ -41,9 +41,9 @@ app.get('/', (req, res) => {
 
 const MURL = process.env.MONGOURI
 // Mangoose connection
-mongoose.connect(MURL, (err) => {
-  console.log('connected to db');
-});
+// mongoose.connect(MURL, (err) => {
+//   console.log('connected to db');
+// });
 
 // // REE | Serve the static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));

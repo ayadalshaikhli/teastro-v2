@@ -1,135 +1,76 @@
-import React, { useState, useEffect, useRef } from "react";
-// import YouTube from "react-youtube";
-// import movieTrailer from "movie-trailer";
+import React, { useState, useEffect } from "react";
 import axios from "./axios";
 import "./Row.css";
 import { Link } from "react-router-dom";
-import gsap, { TweenMax, Expo } from "gsap";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const base_url = "https://image.tmdb.org/t/p/original/";
 
 function Row({ title, fetchUrlMovie, isLargeRow }) {
   const [movies, setMovies] = useState([]);
-  // const [tvs, setTvs] = useState([]);
-  // const [trailerUrl, setTrailerUrl] = useState("");
-  let tl = gsap.timeline({ defaults: { ease: "SlowMo.easeOut" } });
-  let imgs = useRef(null);
+
   useEffect(() => {
     async function fetchData() {
       const request = await axios.get(fetchUrlMovie);
       setMovies(request.data.results);
-      return request;
     }
-    console.log(fetchUrlMovie);
     fetchData();
   }, [fetchUrlMovie]);
 
-  // useEffect(() => {
-  //   async function fetchTv() {
-  //     const request = await axios.get(fetchUrlTv);
-  //     setTvs(request.data.results);
-  //     return request;
-  //   }
-  //   console.log(fetchUrlTv);
-  //   fetchTv();
-  // }, [fetchUrlTv]);
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 5,
+    draggable: false,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
 
-  useEffect(() => {
-    gsap.from(imgs, {
-      opacity: 1,
-      stagger: 1.2,
-      scale: 1.1,
-      delay: 2,
-      duration: 3,
-    });
-  });
-
-  // const opts = {
-  //   height: "390",
-  //   width: "100%",
-  //   playerVars: {
-  //     autoplay: 1,
-  //   },
-  // };
-
-  // const handleClick = (movie) => {
-  //   if (trailerUrl) {
-  //     setTrailerUrl("");
-  //   } else {
-  //     movieTrailer(movie?.name || movie?.title || movie?.original_name || "")
-  //       .then((url) => {
-  //         const urlParams = new URLSearchParams(new URL(url).search);
-  //         setTrailerUrl(urlParams.get("v"));
-  //       })
-  //       .catch((error) => console.log(error));
-  //   }
-  // };
   return (
-    <div className="row  mt-16 ml-20 text-white">
-      {/* {Title} */}
-      <h2 className="title">{title}</h2>
-
-      {/* {Container -> Posters} */}
-
-      <div
-        className="row__posters  flex   mt-10 overflow-x-scroll overflow-y-hidden"
-        ref={(el) => (imgs = el)}
-      >
+    <div className="ml-20 mr-20 mt-10 text-white">
+      <h2 className="title text-4xl py-2 ml-2">{title}</h2>
+      <Slider {...settings}>
         {movies.map((movie) => (
-          <Link
-            style={{ textDecoration: "none", color: "white" }}
-            to={`/movie/${movie.id}`}
-          >
-            <div className="poster flex-grow h-auto w-52 ml-1 ">
+          <Link style={{ textDecoration: "none", color: "white" }} to={`/movie/${movie.id}`} key={movie.id}>
+            <div className="poster relative h-auto ml-2 mr-2">
               <img
-                key={movie.id}
-                // onClick={() => handleClick(movie)}
-                className={`row__poster p-3 ${
-                  isLargeRow && "row__posterLarge "
-                }`}
-                src={`${base_url}${
-                  isLargeRow ? movie.poster_path : movie.backdrop_path
-                }`}
+                className={`row__poster rounded-xl ${isLargeRow && "row__posterLarge"}`}
+                src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path}`}
                 alt={movie.name}
               />
-
-              {/* <div className="onhover">
-                <h1>{movie.title}</h1>
-                <h1>{movie.overview}</h1>
-                <h1>{movie.media_type}</h1>
-              </div> */}
+              <div className="absolute left-0 bottom-0 px-5 py-5 bg-gradient-to-t from-gray-900 to-transparent w-full rounded-xl">
+                <h1 className="text-md">{movie.title}</h1>
+                <p className="text-xs">{movie.release_date}</p>
+              </div>
             </div>
           </Link>
         ))}
-        {/* {tvs.map((movie) => (
-          <Link to={`/details/${movie.id}`}  >
-            
-            <div className="poster" >
-            <img
-              key={movie.id}
-              
-              // onClick={() => handleClick(movie)}
-              className={`row__poster ${isLargeRow && "row__posterLarge"}`}
-              src={`${base_url}${
-                isLargeRow ? movie.poster_path : movie.backdrop_path
-              }`}
-              alt={movie.name}
-              
-            />
-            <div className="onhover" >
-            <h1>{movie.title}</h1>
-            <h1>{movie.overview}</h1>
-            </div>
-            
-
-            </div>
-            
-          </Link>
-        )
-        )} */}
-      </div>
-
-      {/* {trailerUrl && <YouTube videoId={trailerUrl} opts={opts} />} */}
+      </Slider>
     </div>
   );
 }

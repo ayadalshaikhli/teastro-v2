@@ -9,7 +9,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #111;
-  max-width: 99vw !important;
+  max-width: 100% !important;
   max-height: auto;
 }
 
