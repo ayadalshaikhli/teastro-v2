@@ -5,17 +5,17 @@ const express = require('express');
 const path = require('path');
 const puppeteer = require('puppeteer');
 const mongoose = require('mongoose');
+const cors = require('cors'); // Import the cors package
 
 const { typeDefs, resolvers } = require('./schemas');
-
-
-
-
-
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(cors({
+  origin: 'https://tea-tro.netlify.app/' // Replace 'https://example.com' with your desired URL
+}));
 
 const PORT = process.env.PORT || 5000;
 
@@ -140,7 +140,7 @@ app.get('/api/getMovies', async (req, res) => {
       await page.goto(
         `https://mycimaa.tube/category/${moviename}/`
       );
-      console.log(page ,"PUPPET | Page has been evaluated!");
+      console.log(page, "PUPPET | Page has been evaluated!");
 
       const dataa = await page.evaluate(() => {
         const srcss = Array.from(
@@ -193,9 +193,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
-  app.listen(PORT, () => {
-    console.log(`API server running on port: http://localhost:${PORT}`);
-    // log where we can go to test our GQL API
-    console.log(`Use GraphQL at: http://localhost:${PORT}${server.graphqlPath}`);
-  });
+app.listen(PORT, () => {
+  console.log(`API server running on port: http://localhost:${PORT}`);
+  // log where we can go to test our GQL API
+  console.log(`Use GraphQL at: http://localhost:${PORT}${server.graphqlPath}`);
+});
 
