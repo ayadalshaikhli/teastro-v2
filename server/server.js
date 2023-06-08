@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://tea-tro.netlify.app/' // Replace 'https://example.com' with your desired URL
+  origin: 'https://tea-tro.netlify.app' // Replace 'https://example.com' with your desired URL
 }));
 
 const PORT = process.env.PORT || 5000;
