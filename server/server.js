@@ -174,7 +174,7 @@ app.get('/api/hello', (req, res) => {
   console.log("REQUEST | params , query , route");
   console.log("+++++++++");
   console.log(req);
-  res.sendStatus;
+  res.send({ express: 'Hello From Express' });
 
 });
 
