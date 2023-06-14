@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "./MovieDetail.css";
+// import "./MovieDetail.css";
 import movieTrailer from "movie-trailer";
 import YouTube from "react-youtube";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ function MovieDetail({ match }) {
 
   const [queryResult, setQueryResult] = useState("");
   const [queryStatus, setQueryStatus] = useState("GET MOVIE");
+  const [queryHello, setQueryHello] = useState("HELLO");
   const [movie, setMovie] = useState({});
   const [credits, setCredits] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
@@ -155,6 +156,21 @@ function MovieDetail({ match }) {
     });
   };
 
+  const fetchHello = async () => {
+    setQueryHello("GETTING...");
+
+    const fetchHello = await fetch(
+      `https://react-crud-xcw8.onrender.com/api/hello`
+    );
+    
+    const hello = await fetchHello.json();
+    setQueryHello(hello);
+    console.log(hello);
+
+
+  }
+
+
   const opts = {
     height: "390",
     width: "100%",
@@ -177,8 +193,8 @@ function MovieDetail({ match }) {
   };
 
   return (
-    <div className="movie__details font-mono text-xl">
-      <div className="poster text-white ">
+    <div className="movie__details relative font-mono text-sm md:text-xl overflow-hidden">
+      <div className="poster text-white">
         <div
           className="movie__info relative bg-cover bg-center-center h-screen"
           style={{
@@ -186,9 +202,9 @@ function MovieDetail({ match }) {
             )`,
           }}
         >
-          <div className="inf z-20 absolute top-1/4 left-1/4">
+          <div className="z-20 md:absolute md:top-1/4 md:left-1/4">
             <div
-              className="movie__overview flex"
+              className="movie__overview md:flex flex flex-col md:flex-row md:justify-between md:items-center md:space-x-10 md:space-y-0 space-y-10"
               ref={(el) => (movieOverAnimation = el)}
             >
               <div
@@ -197,16 +213,16 @@ function MovieDetail({ match }) {
               >
                 <img
                   key={movie.id}
-                  className="poster__overview w-96 h-auto mt-7"
+                  className="poster__overview w-96 h-96 mt-7"
                   src={`${base_url}${movie.poster_path}`}
                   alt={movie.name}
                 />
               </div>
               <div className="movie_story" ref={(el) => (titleAnimation = el)}>
                 <h1>{movie.original_title}</h1>
-                <h1 className="description text-sm overflow-hidden  pb-9 h-auto w-1/4">
+                <p className="description text-xs overflow-hidden  pb-9 h-auto md:w-1/4">
                   {truncate(movie.overview, 250)}
-                </h1>
+                </p>
 
                 <h1>
                   {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}min
@@ -228,6 +244,13 @@ function MovieDetail({ match }) {
                   {queryStatus}
                   {/* <button  className="trailer__button movie__button" onClick={() => setIsOpen(true)}></button> */}
                 </button>
+                <button className="trailer__button movie__button ml-10 bg-red-600 rounded-lg text-white px-3 py-2"
+                  onClick={() => {
+                    fetchHello();
+                  }}
+                >
+                  
+                  Helloo Boys</button>
                 {/* Check to see if any items are found*/}
 
                 <div className="movie_information flex mt-5">
@@ -254,7 +277,7 @@ function MovieDetail({ match }) {
             </div>
           </div>
         </div>
-        <div className="background-blur absolute z-10 inset-0	 h-screen -w-screen z-10 bg-gradient-to-r from-gray-900"></div>
+        <div className="background-blur absolute inset-0 h-screen -w-screen z-10 "></div>
         <Model open={isOpen} onClose={() => setIsOpen(false)}>
           {queryResult.length ? (
             <div>

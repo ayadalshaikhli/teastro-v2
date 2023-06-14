@@ -36,7 +36,7 @@ app.use('/posts', postsRoute);
 app.use(express.static(path.join(__dirname, './')));
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('New');
 });
 
 const MURL = process.env.MONGOURI
@@ -169,6 +169,15 @@ app.get('/api/getMovies', async (req, res) => {
 
   res.send(JSON.stringify(data))
 });
+
+app.get('/api/hello', (req, res) => {
+  console.log("REQUEST | params , query , route");
+  console.log("+++++++++");
+  console.log(req);
+  res.sendStatus;
+
+});
+
 
 // REE | Handles any requests that don't match the ones above
 app.get('*', (req, res) => {
