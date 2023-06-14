@@ -163,9 +163,10 @@ function MovieDetail({ match }) {
       `https://react-crud-xcw8.onrender.com/api/hello`
     );
     
-    const hello = await fetchHello.json();
-    setQueryHello(hello);
+    const hello = await fetchHello.response;
+    setQueryHello('Got IT');
     console.log(hello);
+
 
 
   }
