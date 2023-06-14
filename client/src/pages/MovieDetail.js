@@ -250,7 +250,7 @@ function MovieDetail({ match }) {
                   }}
                 >
                   
-                  Helloo Boys</button>
+                  {queryHello}</button>
                 {/* Check to see if any items are found*/}
 
                 <div className="movie_information flex mt-5">
