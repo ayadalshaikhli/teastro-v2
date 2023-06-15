@@ -170,6 +170,9 @@ async function movieDetailsFetch() {
   const movies = await collection.find({}).toArray();
   // console.log(movies , "movies123");
   for (const movie of movies) {
+    // Delay the each loop by 30 seconds
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 30));
+    console.log(movie.src);
     const browser = await puppeteer.launch({
       args: [
         "--no-sandbox",
@@ -181,6 +184,7 @@ async function movieDetailsFetch() {
     });
     const page = await browser.newPage();
     await page.goto(movie.src);
+
     const data = await page.evaluate(() => {
       const srcs = Array.from(document.querySelectorAll("btn")).map((btn) =>
           btn.getAttribute("data-url")
