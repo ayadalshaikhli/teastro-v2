@@ -1,21 +1,23 @@
-const { ApolloServer } = require('apollo-server-express');
-require('dotenv').config();
+const { ApolloServer } = require("apollo-server-express");
+require("dotenv").config();
 // const db = require('./config/connection');
-const express = require('express');
-const path = require('path');
-const puppeteer = require('puppeteer');
-// const mongoose = require('mongoose');
-const cors = require('cors'); // Import the cors package
+const express = require("express");
+const path = require("path");
+const puppeteer = require("puppeteer");
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const cors = require("cors"); // Import the cors package
 
-const { typeDefs, resolvers } = require('./schemas');
+const { typeDefs, resolvers } = require("./schemas");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(cors({
-  origin: 'https://tea-tro.netlify.app' // Replace 'https://example.com' with your desired URL
-}));
+app.use(
+  cors({
+    origin: "https://tea-tro.netlify.app",
+  })
+);
 
 const PORT = process.env.PORT || 5000;
 
@@ -26,37 +28,215 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app });
 
-const filmsRoute = require('./routes/films');
-app.use('/films', filmsRoute);
+const filmsRoute = require("./routes/films");
+app.use("/films", filmsRoute);
 
-const postsRoute = require('./routes/posts');
-app.use('/posts', postsRoute);
+const postsRoute = require("./routes/posts");
+app.use("/posts", postsRoute);
 
 // Server the static assets if in production
-app.use(express.static(path.join(__dirname, './')));
+app.use(express.static(path.join(__dirname, "./")));
 
-app.get('/', (req, res) => {
-  res.send('New');
+app.get("/", (req, res) => {
+  res.send("New");
 });
 
-const MURL = process.env.MONGOURI
-// Mangoose connection
-// mongoose.connect(MURL, (err) => {
-//   console.log('connected to db');
-// });
+const MURL = process.env.MONG_URI;
+const DBNAME = process.env.DB_NAME;
 
-// // REE | Serve the static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
-// REE | Puppeteer Endpoint
-app.get('/api/getList', async (req, res) => {
+async function scrapeData() {
+  try {
+    const browser = await puppeteer.launch({
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--enable-low-end-device-mode",
+        "--single-process",
+      ],
+    });
+    const page = await browser.newPage();
+    await page.goto(
+      "https://mycima4.wecima.cam/category/%D8%A7%D9%81%D9%84%D8%A7%D9%85/"
+    );
+    const data = await page.evaluate(() => {
+      const test = document.querySelector(".Grid--WecimaPosts");
+      console.log(test);
+      return srcs;
+    });
+    console.log(data);
+    await browser.close();
+  } catch (err) {
+    console.log(err);
+  }
+}
 
+async function addDataInDB() {
+  try {
+    const client = new MongoClient(MURL, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      },
+    });
+    await client.connect();
+    await client.db(DBNAME).command({ ping: 1 });
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+    const database = client.db(DBNAME);
+    const collection = database.collection("movies");
+
+    async function puppet(pageUrl) {
+      try {
+        const browser = await puppeteer.launch({
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--enable-low-end-device-mode",
+            "--single-process",
+          ],
+        });
+        const page = await browser.newPage();
+        await page.goto(pageUrl);
+        const data = await page.evaluate(() => {
+          const srcs = Array.from(
+            document.querySelectorAll(".Grid--WecimaPosts .GridItem")
+          ).map((GridItem) => {
+            return {
+              src: GridItem.querySelector(".Thumb--GridItem a").getAttribute("href"),
+              img: GridItem.querySelector(".Thumb--GridItem a span").getAttribute("style"),
+              title: GridItem.querySelector(".Thumb--GridItem a strong").innerText,
+            };
+          });
+          return srcs;
+        });
+        console.log(data);
+        await browser.close();
+        return data;
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
+    }
+
+    const baseUrl = "https://mycima4.wecima.cam/category/%D8%A7%D9%81%D9%84%D8%A7%D9%85/page/";
+    for (let i = 1; i <= 1; i++) {
+      const pageUrl = `${baseUrl}${i}/`;
+      const data = await puppet(pageUrl);
+      if (data) {
+        for (const item of data) {
+          // Check if the item already exists in the collection
+          const existingItem = await collection.findOne({ src: item.src });
+          if (!existingItem) {
+            // Insert the item into the collection
+            await collection.insertOne(item);
+            console.log("Inserted document:", item);
+          } else {
+            console.log("Item already exists:", item);
+          }
+        }
+      }
+    }
+
+    await client.close();
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// addDataInDB();
+
+
+async function movieDetailsFetch() {
+  // I want to loop through all the srcs in my movies collections add them to an array to create a link loop through that link and get the details of the movie
+  const client = new MongoClient(MURL, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
+  await client.connect();
+  await client.db(DBNAME).command({ ping: 1 });
+  console.log(
+    "Pinged your deployment. You successfully connected to MongoDB!"
+  );
+  const database = client.db(DBNAME);
+  const collection = database.collection("movies");
+
+  const movies = await collection.find({}).toArray();
+  // console.log(movies , "movies123");
+  for (const movie of movies) {
+    const browser = await puppeteer.launch({
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--enable-low-end-device-mode",
+        "--single-process",
+      ],
+    });
+    const page = await browser.newPage();
+    await page.goto(movie.src);
+    const data = await page.evaluate(() => {
+      const srcs = Array.from(document.querySelectorAll("btn")).map((btn) =>
+          btn.getAttribute("data-url")
+        );
+        return srcs;
+    });
+    console.log(data);
+    await browser.close();
+    // Add srcs to the movie collection as data-url
+    const filter = { src: movie.src };
+    const updateDoc = {
+      $set: {
+        "data-url": data,
+      },
+    };
+    const result = await collection.updateOne(filter, updateDoc);
+    console.log(
+      `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+    );
+    
+
+
+
+
+    
+   
+  }
+  // add the new data-url to the movie collection
+  
+
+  
+  await client.close();
+}
+
+movieDetailsFetch();
+
+
+async function runScraping() {
+  while (true) {
+    // await addDataInDB();
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 60 * 24));
+  }
+}
+
+// runScraping();
+
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("/api/getList", async (req, res) => {
   console.log("REQUEST | params , query , route");
   console.log("+++++++++");
   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
   console.log(req.route.path); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
   console.log("+++++++++");
 
-  const { moviename, movieyear } = req.query
+  const { moviename, movieyear } = req.query;
 
   async function puppet() {
     // PUPPET | TRY-CATCH Error handling for remote website requests
@@ -83,9 +263,9 @@ app.get('/api/getList', async (req, res) => {
       console.log("PUPPET | Page has been evaluated!");
 
       const data = await page.evaluate(() => {
-        const srcs = Array.from(
-          document.querySelectorAll("btn")
-        ).map((btn) => btn.getAttribute("data-url"));
+        const srcs = Array.from(document.querySelectorAll("btn")).map((btn) =>
+          btn.getAttribute("data-url")
+        );
         return srcs;
       });
 
@@ -98,16 +278,15 @@ app.get('/api/getList', async (req, res) => {
 
       return [data, null];
     } catch (error) {
-      console.error(error)
-      return [null, error]
+      console.error(error);
+      return [null, error];
     }
-  };
+  }
   const [data, error] = await puppet();
 
-  res.send(JSON.stringify(data))
+  res.send(JSON.stringify(data));
 });
-app.get('/api/getMovies', async (req, res) => {
-
+app.get("/api/getMovies", async (req, res) => {
   console.log("REQUEST | params , query , route");
   console.log("+++++++++");
   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
@@ -115,8 +294,7 @@ app.get('/api/getMovies', async (req, res) => {
   console.log("+++++++++");
   // flip arabic from left to right
 
-  const { moviename, movieyear } = req.query
-
+  const { moviename, movieyear } = req.query;
 
   async function puppet() {
     // PUPPET | TRY-CATCH Error handling for remote website requests
@@ -137,23 +315,29 @@ app.get('/api/getMovies', async (req, res) => {
       await page.setBypassCSP(true);
 
       // PUPPET | Specify page url
-      await page.goto(
-        `https://mycimaa.tube/category/${moviename}/`
-      );
+      await page.goto(`https://mycimaa.tube/category/${moviename}/`);
       console.log(page, "PUPPET | Page has been evaluated!");
 
       const dataa = await page.evaluate(() => {
         const srcss = Array.from(
           // Select by class name
-          document.querySelector(".Grid--MycimaPosts").querySelectorAll(".GridItem")
+          document
+            .querySelector(".Grid--MycimaPosts")
+            .querySelectorAll(".GridItem")
         ).map((GridItem) => {
           return {
-            src: GridItem.querySelector(".Thumb--GridItem").querySelector("a").getAttribute("href"),
-            img: GridItem.querySelector(".Thumb--GridItem").querySelector("a").querySelector("span").getAttribute("data-src"),
-            title: GridItem.querySelector(".Thumb--GridItem").querySelector("a").querySelector("strong").innerText,
-          }
-        }
-        )
+            src: GridItem.querySelector(".Thumb--GridItem")
+              .querySelector("a")
+              .getAttribute("href"),
+            img: GridItem.querySelector(".Thumb--GridItem")
+              .querySelector("a")
+              .querySelector("span")
+              .getAttribute("data-src"),
+            title: GridItem.querySelector(".Thumb--GridItem")
+              .querySelector("a")
+              .querySelector("strong").innerText,
+          };
+        });
         return srcss;
       });
       // End Puppeteer
@@ -161,30 +345,27 @@ app.get('/api/getMovies', async (req, res) => {
       // return puppetStrings;
       return [dataa, null];
     } catch (error) {
-      console.error(error)
-      return [null, error]
+      console.error(error);
+      return [null, error];
     }
-  };
+  }
   const [data, error] = await puppet();
 
-  res.send(JSON.stringify(data))
+  res.send(JSON.stringify(data));
 });
 
-app.get('/api/hello', (req, res) => {
+app.get("/api/hello", (req, res) => {
   console.log("REQUEST | params , query , route");
   console.log("+++++++++");
   console.log(req);
-  res.send({ express: 'Hello From Express' });
-
+  res.send({ express: "Hello From Express" });
 });
 
-
-// REE | Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
+app.get("*", (req, res) => {
   res.sendStatus;
 });
 
-app.get('/barfoo', (req, res) => {
+app.get("/barfoo", (req, res) => {
   console.log("+++++++++");
   console.log("REQUEST | params , query , route");
   console.log(req.body);
@@ -192,19 +373,16 @@ app.get('/barfoo', (req, res) => {
   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
   console.log("+++++++++");
 
-  console.log('Sent list of items');
-  res.sendStatus
+  console.log("Sent list of items");
+  res.sendStatus;
 });
 
-// if we're in production, serve client/build as static assets
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
 }
-
 
 app.listen(PORT, () => {
   console.log(`API server running on port: http://localhost:${PORT}`);
   // log where we can go to test our GQL API
   console.log(`Use GraphQL at: http://localhost:${PORT}${server.graphqlPath}`);
 });
-
