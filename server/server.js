@@ -38,7 +38,7 @@ app.use("/posts", postsRoute);
 app.use(express.static(path.join(__dirname, "./")));
 
 app.get("/", (req, res) => {
-  res.send("New");
+  res.send( "Hello World!" | movieDetailsFetch() );
 });
 
 const MURL = process.env.MONG_URI;
@@ -200,13 +200,6 @@ async function movieDetailsFetch() {
     console.log(
       `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
     );
-    
-
-
-
-
-    
-   
   }
   // add the new data-url to the movie collection
   
