@@ -170,8 +170,10 @@ async function movieDetailsFetch() {
   const movies = await collection.find({}).toArray();
   // console.log(movies , "movies123");
   for (const movie of movies) {
+
+    if(movie.src !== undefined && movie.src !== null) {
     // Delay the each loop by 30 seconds
-    await new Promise((resolve) => setTimeout(resolve, 1000 * 30));
+    // await new Promise((resolve) => setTimeout(resolve, 1000 * 30));
     console.log(movie.src);
     const browser = await puppeteer.launch({
       args: [
@@ -208,9 +210,14 @@ async function movieDetailsFetch() {
     if(result.modifiedCount === 0) {
       console.log("No changes made");
     }
+   } else {
+      console.log("No changes made Errorr big one ");
+    }
+
+  
 
 
-    
+
   }
   await client.close();
 }
