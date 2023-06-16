@@ -14,6 +14,13 @@ const typeDefs = gql`
     tech2_votes: Int
   }
 
+  type Movies {
+    _id: ID!
+    title: String!
+    data-url: String!
+
+  }
+
   type Query {
     tech: [Tech]
     matchups(_id: String): [Matchup]

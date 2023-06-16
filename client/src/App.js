@@ -19,6 +19,7 @@ import NotFound from './pages/NotFound';
 import Vote from './pages/Vote';
 import "./App.css"; // BASE
 import Pup from './pages/Pup';
+import MoviesDB from './pages/MoviesDB';
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -33,7 +34,6 @@ function App() {
         <Nav fetchUrl={requests.fetchSearch} />
         <div >
           <Switch>
-
             {/* BASE COMPONENTS */}
             <Route
               path="/movie/:id"
@@ -57,6 +57,7 @@ function App() {
 
             <Route path="/signin" exact component={Signin} />
             <Route path="/mylist" exact component={Mylist} />
+            <Route path='/many' exact component={MoviesDB} />
             <Route path="/puppeteer" exact component={Puppeteer}/>
             {/* BASE END */}
             {/* MATCHUP COMPONENTS */}

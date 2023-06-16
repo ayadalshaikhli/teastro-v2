@@ -11,19 +11,19 @@ import requests from "./requests";
 import Banner from "./Banner";
 
 
-const { loading, data } = useQuery(QUERY_MATCHUPS, {
-  fetchPolicy: "no-cache"
-});
-
-const [deleteMe, { error }] = useMutation(DELETE_MATCHUP);
-
-const matchupList = data?.matchups || [];
-console.table(matchupList);
 
 class Home extends Component {
 
   render() {
-
+    const { loading, data } = useQuery(QUERY_MATCHUPS, {
+      fetchPolicy: "no-cache"
+    });
+    
+    const [deleteMe, { error }] = useMutation(DELETE_MATCHUP);
+    
+    const matchupList = data?.matchups || [];
+    console.table(matchupList);
+    
     // ROW CAN BE CREATED HERE
     return (
       < div className="App" >

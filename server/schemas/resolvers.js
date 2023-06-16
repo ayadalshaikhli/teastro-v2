@@ -1,4 +1,4 @@
-const { Tech, Matchup } = require('../models');
+const { Tech, Matchup, Movies} = require('../models');
 
 const resolvers = {
   Query: {
@@ -9,6 +9,10 @@ const resolvers = {
       const params = _id ? { _id } : {};
       return Matchup.find(params);
     },
+    movies: async () => {
+      return Movies.find({});
+    }
+    
   },
   Mutation: {
     createMatchup: async (parent, args) => {

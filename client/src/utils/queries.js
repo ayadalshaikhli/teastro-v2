@@ -19,4 +19,17 @@ export const QUERY_MATCHUPS = gql`
       tech2_votes
     }
   }
+
+  
 `;
+
+// export const QUERY_MOVIES = gql`
+//   query movies {
+//     movies  {
+//       _id
+//       screen
+//       title
+//       data-url 
+//     }
+//   }
+// `;
