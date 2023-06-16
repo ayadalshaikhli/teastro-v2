@@ -38,7 +38,7 @@ app.use("/posts", postsRoute);
 app.use(express.static(path.join(__dirname, "./")));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!" | movieDetailsFetch());
+  res.send( "Hello World!" | movieDetailsFetch() );
 });
 
 const MURL = process.env.MONG_URI;
@@ -106,14 +106,9 @@ async function addDataInDB() {
             document.querySelectorAll(".Grid--WecimaPosts .GridItem")
           ).map((GridItem) => {
             return {
-              src: GridItem.querySelector(".Thumb--GridItem a").getAttribute(
-                "href"
-              ),
-              img: GridItem.querySelector(
-                ".Thumb--GridItem a span"
-              ).getAttribute("style"),
-              title: GridItem.querySelector(".Thumb--GridItem a strong")
-                .innerText,
+              src: GridItem.querySelector(".Thumb--GridItem a").getAttribute("href"),
+              img: GridItem.querySelector(".Thumb--GridItem a span").getAttribute("style"),
+              title: GridItem.querySelector(".Thumb--GridItem a strong").innerText,
             };
           });
           return srcs;
@@ -127,8 +122,7 @@ async function addDataInDB() {
       }
     }
 
-    const baseUrl =
-      "https://mycima4.wecima.cam/category/%D8%A7%D9%81%D9%84%D8%A7%D9%85/page/";
+    const baseUrl = "https://mycima4.wecima.cam/category/%D8%A7%D9%81%D9%84%D8%A7%D9%85/page/";
     for (let i = 1; i <= 1; i++) {
       const pageUrl = `${baseUrl}${i}/`;
       const data = await puppet(pageUrl);
@@ -155,27 +149,30 @@ async function addDataInDB() {
 
 // addDataInDB();
 
+
 async function movieDetailsFetch() {
-  try {
-    const client = new MongoClient(MURL, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-    });
-    await client.connect();
-    await client.db(DBNAME).command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
-    const database = client.db(DBNAME);
-    const collection = database.collection("movies");
+  // I want to loop through all the srcs in my movies collections add them to an array to create a link loop through that link and get the details of the movie
+  const client = new MongoClient(MURL, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
+  await client.connect();
+  await client.db(DBNAME).command({ ping: 1 });
+  console.log(
+    "Pinged your deployment. You successfully connected to MongoDB!"
+  );
+  const database = client.db(DBNAME);
+  const collection = database.collection("movies");
 
-    const movies = await collection
-      .find({ details: { $exists: false } })
-      .toArray();
-
+  const movies = await collection.find({}).toArray();
+  // console.log(movies , "movies123");
+  for (const movie of movies) {
+    // Delay the each loop by 30 seconds
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 30));
+    console.log(movie.src);
     const browser = await puppeteer.launch({
       args: [
         "--no-sandbox",
@@ -185,40 +182,41 @@ async function movieDetailsFetch() {
         "--single-process",
       ],
     });
+    const page = await browser.newPage();
+    await page.goto(movie.src);
 
-    for (const movie of movies) {
-      try {
-        const page = await browser.newPage();
-        await page.goto(movie.src);
-
-        const data = await page.evaluate(() => {
-          const srcs = Array.from(document.querySelectorAll(".btn")).map(
-            (btn) => btn.getAttribute("data-url")
-          );
-          return srcs;
-        });
-
-        console.log(data);
-        await browser.close();
-
-        movie.details = data;
-        await collection.updateOne(
-          { _id: movie._id },
-          { $set: { details: data } }
+    const data = await page.evaluate(() => {
+      const srcs = Array.from(document.querySelectorAll("btn")).map((btn) =>
+          btn.getAttribute("data-url")
         );
-      } catch (err) {
-        console.log(err);
-        continue;
-      }
+        return srcs;
+    });
+    console.log(data);
+    await browser.close();
+    // Add srcs to the movie collection as data-url
+    const filter = { src: movie.src };
+    const updateDoc = {
+      $set: {
+        "data-url": data,
+      },
+    };
+    const result = await collection.updateOne(filter, updateDoc);
+    console.log(
+      `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+    );
+
+    if(result.modifiedCount === 0) {
+      console.log("No changes made");
     }
 
-    client.close();
-  } catch (err) {
-    console.log(err);
+
+    
   }
+  await client.close();
 }
 
 movieDetailsFetch();
+
 
 async function runScraping() {
   while (true) {
