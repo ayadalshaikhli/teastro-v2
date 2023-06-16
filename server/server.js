@@ -38,7 +38,7 @@ app.use("/posts", postsRoute);
 app.use(express.static(path.join(__dirname, "./")));
 
 app.get("/", (req, res) => {
-  res.send( "Hello World!" | movieDetailsFetch() );
+  res.send( "Hello World!"  );
 });
 
 const MURL = process.env.MONG_URI;
@@ -222,7 +222,7 @@ async function movieDetailsFetch() {
   await client.close();
 }
 
-movieDetailsFetch();
+// movieDetailsFetch();
 
 
 async function runScraping() {
