@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5001"  // <-- location of the react app were connecting to
+    origin: "http://localhost:3000"  // <-- location of the react app were connecting to
   })
 );
 
@@ -166,7 +166,6 @@ async function addDataInDB() {
     console.log(err);
   }
 }
-
 // addDataInDB();
 
 async function movieDetailsFetch() {
@@ -255,13 +254,7 @@ async function movieDetailsFetch() {
     console.log(err);
   }
 }
-
-// Call the function to start fetching movie details
 // movieDetailsFetch();
-
-
-
-
 
 async function deleteRepeatedMovies() {
   try {
@@ -313,19 +306,13 @@ async function deleteRepeatedMovies() {
     console.log(err);
   }
 }
-
-// Call the function to delete repeated movies
 // deleteRepeatedMovies();
-
-
-
 
 
 
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.get("/api/getList", async (req, res) => {
-  console.log("REQUEST | params , query , route");
   console.log("+++++++++");
   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
   console.log(req.route.path); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
@@ -381,6 +368,7 @@ app.get("/api/getList", async (req, res) => {
 
   res.send(JSON.stringify(data));
 });
+
 app.get("/api/getMovies", async (req, res) => {
   console.log("REQUEST | params , query , route");
   console.log("+++++++++");
@@ -476,7 +464,6 @@ app.get("/api/scraped", async (req, res) => {
 
 })
 
-
 app.get("/api/moviesDB/:id", async (req, res) => {
   const id = req.params.id;
 
@@ -510,24 +497,24 @@ app.get("*", (req, res) => {
   res.sendStatus;
 });
 
-// app.get("/barfoo", (req, res) => {
-//   console.log("+++++++++");
-//   console.log("REQUEST | params , query , route");
-//   console.log(req.body);
-//   console.log(req.params); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-//   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-//   console.log("+++++++++");
+app.get("/barfoo", (req, res) => {
+  console.log("+++++++++");
+  console.log("REQUEST | params , query , route");
+  console.log(req.body);
+  console.log(req.params); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+  console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+  console.log("+++++++++");
 
-//   console.log("Sent list of items");
-//   res.sendStatus;
-// });
+  console.log("Sent list of items");
+  res.sendStatus;
+});
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
 }
 
 app.listen(PORT, () => {
-  console.log(`API server running on port: http://localhost:${PORT}`);
+  // console.log(`API server running on port: http://localhost:${PORT}`);
   // log where we can go to test our GQL API
-  console.log(`Use GraphQL at: http://localhost:${PORT}${server.graphqlPath}`);
+  // console.log(`Use GraphQL at: http://localhost:${PORT}${server.graphqlPath}`);
 });

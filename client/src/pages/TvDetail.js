@@ -15,7 +15,7 @@ function MovieDetail({ match }) {
     fetchCredits();
     fetchTv();
     fetchTvEpi();
-    console.log(match.params.id);
+    // console.log(match.params.id);
   }, [match]);
 
   const [tv, setTv] = useState({});
@@ -42,9 +42,9 @@ function MovieDetail({ match }) {
     // Puppeteer
     const tvEpi = await fetchTvEpi.json();
     setTvEpi(tvEpi);
-    console.log(tvEpi);
-    console.log("tvEpi");
-    console.log(tv.seasons[0].id);
+    // console.log(tvEpi);
+    // console.log("tvEpi");
+    // console.log(tv.seasons[0].id);
   };
   const fetchCredits = async () => {
     const fetchCredits = await fetch(
@@ -54,7 +54,7 @@ function MovieDetail({ match }) {
 
     const credits = await fetchCredits.json();
     setCredits(credits.cast);
-    console.log(credits);
+    // console.log(credits);
   };
 
   function truncate(str, n) {

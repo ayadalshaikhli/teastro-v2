@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./PersonDetail.css";
-import movieTrailer from "movie-trailer";
-import YouTube from "react-youtube";
 // import Rating from "react-rating";
 import { Link } from "react-router-dom";
 
@@ -16,7 +14,7 @@ function PersonDetail({ match }) {
     fetchCredits();
     fetchMovies();
     fetchTv();
-    console.log(match.params.id);
+    // console.log(match.params.id);
   }, [match]);
 
   const [credits, setCredits] = useState([]);
@@ -33,7 +31,7 @@ function PersonDetail({ match }) {
 
     const credits = await fetchCredits.json();
     setCredits(credits);
-    console.log(credits);
+    // console.log(credits);
   };
 
   const fetchMovies = async () => {
@@ -46,7 +44,7 @@ https://api.themoviedb.org/3/person/${match.params.id}/movie_credits?api_key=d42
 
     const movies = await fetchMovies.json();
     setMovies(movies.cast);
-    console.log(movies);
+    // console.log(movies);
   };
   const fetchTv = async () => {
     const fetchTv = await fetch(
@@ -58,15 +56,15 @@ https://api.themoviedb.org/3/person/${match.params.id}/tv_credits?api_key=d42525
 
     const tvs = await fetchTv.json();
     setTvs(tvs.cast);
-    console.log(tvs);
+    // console.log(tvs);
   };
 
   function truncate(str, n) {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   }
-  function year(str, n) {
-    return str?.length > n ? str.slice(0, 4) + "" : str;
-  }
+  // function year(str, n) {
+  //   return str?.length > n ? str.slice(0, 4) + "" : str;
+  // }
   // function name(str, n) {
   //   return str?.length > n ? str.replace(/['"]+/g,'')+ "" : str;
   // }

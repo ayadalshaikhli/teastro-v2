@@ -11,11 +11,11 @@ class Signin extends Component {
     }
 
     onChange(e) {
-        console.log("ONCHANGE | this | e.target | name and value");
-        console.log(this);
-        console.log(e.target);
-        console.log(e.target.name);
-        console.log(e.target.value);
+        // console.log("ONCHANGE | this | e.target | name and value");
+        // console.log(this);
+        // console.log(e.target);
+        // console.log(e.target.name);
+        // console.log(e.target.value);
         this.setState({
             [e.target.name]: e.target.value
         });
@@ -24,7 +24,7 @@ class Signin extends Component {
     onSubmit(e) {
         e.preventDefault();
 
-        console.log(e.target)
+        // console.log(e.target)
 
         // fetch(this.props.formAction, {
         //     headers: {

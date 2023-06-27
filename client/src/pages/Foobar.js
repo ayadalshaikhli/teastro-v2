@@ -19,8 +19,8 @@ const Mylist = () => {
 
   // FORM SUBMISSION | inputchange,buttonclick
   const handleInputChange = (event) => {
-    console.log("INPUT CHANGE | target :", event.target);
-    console.log("INPUT CHANGE | target.value :", event.target.value);
+    // console.log("INPUT CHANGE | target :", event.target);
+    // console.log("INPUT CHANGE | target.value :", event.target.value);
 
     const { name, value } = event.target;
     // formData contains both tech1 and tech2 and their respective values
@@ -29,10 +29,10 @@ const Mylist = () => {
   };
 
   const handleButtonClicked = async () => {
-    console.log(searchQuery);
+    // console.log(searchQuery);
     const searchList = await getList(searchQuery, 2021)
     setSearchResults(searchList);
-    console.log(searchResults)
+    // console.log(searchResults)
   };
 
   const handleFormSubmit = async (event) => {

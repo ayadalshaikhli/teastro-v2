@@ -14,7 +14,7 @@ function SimilarMovie({ title, fetchUrl, isLargeRow }) {
       setMovies(request.data.results);
       return request;
     }
-    console.log(fetchUrl);
+    // console.log(fetchUrl);
     fetchData();
   }, [fetchUrl]);
 

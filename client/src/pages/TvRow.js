@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import axios from "./axios";
 import "./Row.css";
 import { Link } from "react-router-dom";
-import gsap, { TweenMax, Expo } from "gsap";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -19,7 +18,7 @@ function TvRow({ title, fetchUrlTv, isLargeRow }) {
       setTvs(request.data.results);
       return request;
     }
-    console.log(fetchUrlTv);
+    // console.log(fetchUrlTv);
     fetchTv();
   }, [fetchUrlTv]);
 

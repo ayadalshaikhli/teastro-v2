@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+
 import { useMutation, useQuery } from '@apollo/client';
 import { QUERY_MATCHUPS } from '../utils/queries';
-// import { QUERY_TECH } from '../utils/queries';
-import { CREATE_MATCHUP, DELETE_MATCHUP } from '../utils/mutations';
+import {  DELETE_MATCHUP } from '../utils/mutations';
 
 
 const Delete = () => {
@@ -23,7 +22,7 @@ const Delete = () => {
     });
 
     // USED TO CREATE A NEW DYNAMIC PAGE
-    let history = useHistory();
+    // let history = useHistory();
 
     // DELETEMATCHUP | Takes a unique string identifier to delete whatever
     const [deleteMatchup, { error }] = useMutation(DELETE_MATCHUP);
@@ -32,32 +31,32 @@ const Delete = () => {
 
     // LOG FORM CHANGES
     const handleInputChange = (event) => {
-        console.log('HANDLEINPUTCHANGE | Event.Target | Name & Value');
-        console.log(event.target); // RETURNS THE <select tag> FROM DOCUMENT
-        console.log(event.target.name); // EX | tech1
-        console.log(event.target.value); // EX | Ayad
+        // console.log('HANDLEINPUTCHANGE | Event.Target | Name & Value');
+        // console.log(event.target); // RETURNS THE <select tag> FROM DOCUMENT
+        // console.log(event.target.name); // EX | tech1
+        // console.log(event.target.value); // EX | Ayad
 
         const { name, value } = event.target;
         // formData contains both tech1 and tech2 and their respective values
         setFormData({[name]: value })
-        console.log("HANDLEINPUTCHANGE | FormData");
-        console.log(formData);
+        // console.log("HANDLEINPUTCHANGE | FormData");
+        // console.log(formData);
     };
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        console.log("HANDLEFORMSUBMIT | Data | FormData");
-        console.log(data); // An array of objects of matchups
-        console.log(formData); // An object which contains the key value of the forms
+        // console.log("HANDLEFORMSUBMIT | Data | FormData");
+        // console.log(data); // An array of objects of matchups
+        // console.log(formData); // An object which contains the key value of the forms
 
-        try {
-            const { data } = await deleteMatchup({
-                variables: { formData },
-            });
+        // try {
+        //     const { data } = await deleteMatchup({
+        //         variables: { formData },
+        //     });
 
-        } catch (err) {
-            console.error(err);
-        }
+        // } catch (err) {
+        //     console.error(err);
+        // }
 
         setFormData({
             _id: 'bar',

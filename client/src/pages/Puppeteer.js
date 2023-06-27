@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Puppeteer() {
@@ -6,20 +6,20 @@ function Puppeteer() {
     const [queryStatus, setQueryStatus] = useState("GET MOVIE");
  
 
-    function truncate(str, n) {
-        return str?.length > n ? str.substr(0, n - 1) + "..." : str;
-      }
-      const formatYear = (str, n) => {
-        return str?.length > n ? str.slice(0, 4) + "" : str;
-      };
-      const formatHyphen = (punctuatedString) => {
-        // var s = ", -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)() punctuation";
-        var s = punctuatedString;
-        var punctuationless = s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
-        var finalString = punctuationless.replace(/\s{2,}/g, " ");
-        var hyphenedString = finalString.replaceAll(" ", "-").toLowerCase();
-        return hyphenedString;
-      };
+    // function truncate(str, n) {
+    //     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+    //   }
+    //   const formatYear = (str, n) => {
+    //     return str?.length > n ? str.slice(0, 4) + "" : str;
+    //   };
+    //   const formatHyphen = (punctuatedString) => {
+    //     // var s = ", -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)() punctuation";
+    //     var s = punctuatedString;
+    //     var punctuationless = s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+    //     var finalString = punctuationless.replace(/\s{2,}/g, " ");
+    //     var hyphenedString = finalString.replaceAll(" ", "-").toLowerCase();
+    //     return hyphenedString;
+    //   };
     
     const fetchQuery = async (movie) => {
         setQueryStatus("GETTING...");

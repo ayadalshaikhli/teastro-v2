@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Nav({ fetchUrl }) {
   const [show, handleShow] = useState(false);
-  const [searchTerm, setSearchTeam] = useState();
+  // const [searchTerm, setSearchTeam] = useState();
   useEffect(() => {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 100) {
@@ -16,18 +16,18 @@ function Nav({ fetchUrl }) {
     };
   }, [fetchUrl]);
 
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    fetch(fetchUrl + searchTerm)
-      .then((res) => res.json())
-      .then((data) => {
-        searchTerm(data.results);
-      });
-  };
+  // const handleOnSubmit = (e) => {
+  //   e.preventDefault();
+  //   fetch(fetchUrl + searchTerm)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       searchTerm(data.results);
+  //     });
+  // };
 
-  const handleOnChange = (e) => {
-    setSearchTeam(e.target.value);
-  };
+  // const handleOnChange = (e) => {
+  //   setSearchTeam(e.target.value);
+  // };
 
   return (
     <div className={`nav ${show && "nav__black"} px-20`}>

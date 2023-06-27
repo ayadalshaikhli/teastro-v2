@@ -1,18 +1,15 @@
 import axios from "./axios";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import requests from "./requests";
 import "./Banner.css";
-import gsap, { timeline, TweenMax, Expo } from "gsap";
-import anime from "animejs";
+import gsap from "gsap";
 import { Link } from "react-router-dom";
 import StarRating from "./Helpers/StarRating";
-// import Rating from "react-rating";
 
 const base_image_url = "https://image.tmdb.org/t/p/original/";
 
 function Banner() {
   // let tl = gsap.timeline({ defaults: { ease: "SlowMo.easeOut" } });
-  const tl = gsap.timeline({ defaults: { ease: "power1.out" } });
 
   const [movie, setMovie] = useState([]);
 

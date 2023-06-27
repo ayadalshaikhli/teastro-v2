@@ -1,3 +1,4 @@
+// App.js
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import Delete from './pages/Delete';
@@ -21,7 +22,6 @@ import "./App.css"; // BASE
 import Pup from './pages/Pup';
 import MoviesDB from './pages/MoviesDB';
 import ScrapedData from './pages/Scraping/ScrapedData';
-import requestMovieDB from './pages/request_moviedb';
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -34,60 +34,30 @@ function App() {
       <Router>
         <LoginScreen />
         <Nav fetchUrl={requests.fetchSearch} />
-        <div >
+        <div>
           <Switch>
             {/* BASE COMPONENTS */}
-            <Route
-              path="/movie/:id"
-              component={MovieDetail}
-              fetchUrlMovie={requests.fetchMovieDetails}
-            />
-            <Route
-              path="/movies/:id"
-              component={Pup}
-            />
-            <Route
-              path="/tv/:id"
-              component={TvDetail}
-              fetchUrlMovie={requests.fetchMovieDetails}
-            />
-            <Route
-              path="/person/:id"
-              component={PersonDetail}
-              fetchUrlMovie={requests.fetchMovieDetails}
-            />
-            <Route path="/moviesDB/:id" 
-            component={MoviesDB} 
-            />
-            
-
-            <Route path="/signin" exact component={Signin} />
-            <Route path="/mylist" exact component={Mylist} />
-            <Route path='/many' exact component={MoviesDB} />
-            <Route path="/puppeteer" exact component={Puppeteer}/>
-            <Route path="/scraped" exact component={ScrapedData}/>
+            <Route path="/movie/:id" component={MovieDetail} />
+            <Route path="/movies/:id" component={Pup} />
+            <Route path="/tv/:id" component={TvDetail} />
+            <Route path="/person/:id" component={PersonDetail} />
+            <Route path="/moviesDB/:id" component={MoviesDB} />
+            <Route path="/signin" component={Signin} />
+            <Route path="/mylist" component={Mylist} />
+            <Route path="/puppeteer" component={Puppeteer} />
+            <Route path="/scraped" component={ScrapedData} />
             {/* BASE END */}
             {/* MATCHUP COMPONENTS */}
-            <Route exact path="/matchup/home">
-              <Home />
-            </Route>
-            <Route exact path="/matchup">
-              <Matchup />
-            </Route>
-            <Route exact path="/matchup/:id">
-              <Vote />
-            </Route>
-            <Route exact path="/delete">
-              <Delete />
-            </Route>
+            <Route exact path="/matchup/home" component={Home} />
+            <Route exact path="/matchup" component={Matchup} />
+            <Route exact path="/matchup/:id" component={Vote} />
+            <Route exact path="/delete" component={Delete} />
             {/* REE COMPONENTS */}
-            <Route exact path='/' component={Home} />
-            <Route path='/list' component={List} />
-            <Route path='/foobar' component={Foobar} />
+            <Route exact path="/" component={Home} />
+            <Route path="/list" component={List} />
+            <Route path="/foobar" component={Foobar} />
             {/* REE END */}
-            <Route>
-              <NotFound />
-            </Route>
+            <Route component={NotFound} />
           </Switch>
         </div>
       </Router>

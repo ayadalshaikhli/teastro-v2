@@ -16,14 +16,20 @@ export default function MoviesDB(props) {
     fetchData();
   }, [params]);
 
+  console.log(moviesDB);
   
+  // const links = moviesDB.movieLinks;
+  
+
   return (
     <>
-    <div className='h-screen text-white bg-blue-300 pt-24'>
+    <div className='h-screen text-white bg-black p-20'>
     <h1>Movie Database</h1>
     <h1>{
         moviesDB.title
       }</h1>
+      
+
    
     </div>
     </>

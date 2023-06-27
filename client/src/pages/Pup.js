@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 function Pup({ match }) {
     const params = match.params.id;
@@ -34,6 +33,7 @@ function Pup({ match }) {
     <div>
         <h1>{queryResult.title}</h1>
         <h1>{queryResult.src}</h1>
+        <h1>{queryStatus}</h1>
     </div>
     </>
   )

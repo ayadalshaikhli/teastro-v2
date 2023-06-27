@@ -4,7 +4,7 @@ import movieTrailer from "movie-trailer";
 import YouTube from "react-youtube";
 import { Link } from "react-router-dom";
 import Model from "./Model";
-import gsap, { timeline, TweenMax, Expo } from "gsap";
+import gsap, { Expo } from "gsap";
 
 const base_url = "https://image.tmdb.org/t/p/original/";
 function MovieDetail({ match }) {
