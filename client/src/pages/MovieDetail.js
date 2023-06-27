@@ -141,6 +141,7 @@ function MovieDetail({ match }) {
 
     // JSON ERROR TESTING
     console.log("TESTING | data2 \n");
+    // fetch from react-crud-xcw8.onrender.com and localhost:5000
     fetch(
       `https://react-crud-xcw8.onrender.com/api/getList?moviename=${formatHyphen(
         movie.original_title

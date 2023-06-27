@@ -20,6 +20,8 @@ import Vote from './pages/Vote';
 import "./App.css"; // BASE
 import Pup from './pages/Pup';
 import MoviesDB from './pages/MoviesDB';
+import ScrapedData from './pages/Scraping/ScrapedData';
+import requestMovieDB from './pages/request_moviedb';
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -54,11 +56,16 @@ function App() {
               component={PersonDetail}
               fetchUrlMovie={requests.fetchMovieDetails}
             />
+            <Route path="/moviesDB/:id" 
+            component={MoviesDB} 
+            />
+            
 
             <Route path="/signin" exact component={Signin} />
             <Route path="/mylist" exact component={Mylist} />
             <Route path='/many' exact component={MoviesDB} />
             <Route path="/puppeteer" exact component={Puppeteer}/>
+            <Route path="/scraped" exact component={ScrapedData}/>
             {/* BASE END */}
             {/* MATCHUP COMPONENTS */}
             <Route exact path="/matchup/home">

@@ -56,6 +56,11 @@ function Nav({ fetchUrl }) {
               TV SHOWS
             </a>
           </li>
+          <li>
+            <a className="text-decoration-none" href="/scraped">
+              SCRAPED
+            </a>
+          </li>
 
         </ul>
       </div>

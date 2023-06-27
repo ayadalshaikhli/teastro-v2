@@ -5,7 +5,7 @@ const Film = require('../models/Film');
 
 
 router.get('/', async (req, res) => {
-    try{
+    try {
         const films = await Film.find();
         res.send(films);
     } catch (err) {
@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
 
 });
 
-router.get('/:filmId', async(req, res) => {
-    try{
+router.get('/:filmId', async (req, res) => {
+    try {
         const film = await Film.findById(req.params.filmId);
         res.send(film);
     } catch (err) {
