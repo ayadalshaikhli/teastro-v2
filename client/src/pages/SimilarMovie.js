@@ -2,12 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "./axios";
 import "./Row.css";
 import { Link } from "react-router-dom";
-import gsap, { TweenMax, Expo } from "gsap";
 const base_url = "https://image.tmdb.org/t/p/original/";
 
 function SimilarMovie({ title, fetchUrl, isLargeRow }) {
   const [movies, setMovies] = useState([]);
-  let imgs = useRef(null);
   useEffect(() => {
     async function fetchData() {
       const request = await axios.get(fetchUrl);
@@ -27,7 +25,7 @@ function SimilarMovie({ title, fetchUrl, isLargeRow }) {
 
       <div
         className="row__posters flex mt-10 overflow-x-scroll overflow-y-hidden"
-        ref={(el) => (imgs = el)}
+        
       >
         {movies.map((movie) => (
           <Link to={`/movie/${movie.id}`}>

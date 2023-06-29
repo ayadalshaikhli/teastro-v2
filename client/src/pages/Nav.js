@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Nav.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 function Nav({ fetchUrl }) {
   const [show, handleShow] = useState(false);
@@ -15,6 +15,8 @@ function Nav({ fetchUrl }) {
       window.removeEventListener("scroll");
     };
   }, [fetchUrl]);
+
+  const history = useHistory();
 
   // const handleOnSubmit = (e) => {
   //   e.preventDefault();
@@ -31,53 +33,46 @@ function Nav({ fetchUrl }) {
 
   return (
     <div className={`nav ${show && "nav__black"} px-20`}>
-      <div className="logo__links">
-        <Link to="/">
-          <img
-            className="website-logo"
-            src="https://fontmeme.com/permalink/210902/ea52f9be615d012bb9369788bfdc977f.png"
-            alt="netflix-font"
-            border="0"
-          />
-        </Link>
-        <ul>
-          <li>
-            <a className="text-decoration-none" href="/">
-              TOP CAST
-            </a>
-          </li>
-          <li>
-            <a className="text-decoration-none" href="/mylist">
-              MOVICES
-            </a>
-          </li>
-          <li>
-            <a className="text-decoration-none" href="/mylist">
-              TV SHOWS
-            </a>
-          </li>
-          <li>
-            <a className="text-decoration-none" href="/scraped">
-              SCRAPED
-            </a>
-          </li>
+      <div className="logo__links text-white">
+        <img
+          onClick={() => history.push("/")}
+          className="website-logo"
+          src="https://fontmeme.com/permalink/210902/ea52f9be615d012bb9369788bfdc977f.png"
+          alt="netflix-font"
+          border="0"
+        />
 
+        <ul>
+          <li
+            className="text-decoration-none"
+            onClick={() => history.push("/")}
+          >
+            TOP CAST
+          </li>
+          <li
+            className="text-decoration-none"
+            onClick={() => history.push("/mylist")}
+          >
+            MOVICES
+          </li>
+          <li
+            className="text-decoration-none"
+            onClick={() => history.push("/mylist")}
+          >
+            TV SHOWS
+          </li>
+          <li
+            className="text-decoration-none"
+            onClick={() => history.push("/scraped")}
+          >
+            SCRAPED
+          </li>
         </ul>
       </div>
       <div>
-        
         <div className="px-4 py-2 bg-red-700 text-white rounded-2xl">
           Login/ Sign in
         </div>
-        {/* <form className="bn" onSubmit={handleOnSubmit}>
-          <input
-            className="search__bar "
-            type="search"
-            placeholder="Search-bar"
-            value={searchTerm}
-            onChange={handleOnChange}
-          />
-        </form> */}
       </div>
     </div>
   );

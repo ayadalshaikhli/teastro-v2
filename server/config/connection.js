@@ -1,17 +1,14 @@
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
+require("dotenv").config();
 
-// // mongoose.connect( "mongodb+srv://teatroDBuser:easyDBpassword@cluster0.1t258.mongodb.net/myFirstDatabase?retryWrites=true&w=majority" || process.env.MONGODB_URI || 'mongodb://localhost/teatro', {
-// //   useNewUrlParser: true,
-// //   useUnifiedTopology: true,
-// //   useCreateIndex: true,
-// //   useFindAndModify: false,
-// // });
+const MURL = process.env.MONG_URI;
+const DBNAME = process.env.DB_NAME;
 
-// mongoose.connect( "mongodb+srv://teatroDBuser:easyDBpassword@cluster0.1t258.mongodb.net/myFirstDatabase?retryWrites=true&w=majority" || process.env.MONGODB_URI , {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useCreateIndex: true,
-//   useFindAndModify: false,
-// });
+mongoose.connect( MURL + DBNAME, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 
-// module.exports = mongoose.connection;
+module.exports = mongoose.connection;

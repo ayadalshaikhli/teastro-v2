@@ -21,9 +21,9 @@ function Banner() {
         Math.floor(Math.random() * request.data.results.length)
         ]
       );
-      console.log("+++");
-      console.log(request);
-      console.log("+++");
+      // console.log("+++");
+      // console.log(request);
+      // console.log("+++");
       return request;
     }
     fetchData();
