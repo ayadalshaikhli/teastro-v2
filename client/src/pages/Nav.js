@@ -69,9 +69,19 @@ function Nav({ fetchUrl }) {
           </li>
         </ul>
       </div>
-      <div>
+      <div className="flex">
         <div className="px-4 py-2 bg-red-700 text-white rounded-2xl">
           Login/ Sign in
+        </div>
+        <div>
+          {/* Profile Avatar */}
+          <img
+            onClick={() => history.push("/profile")}
+            className="nav__avatar w-10 h-10 rounded-full cursor-pointer"
+            src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+            alt="Netflix Avatar"
+          />
+
         </div>
       </div>
     </div>

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../features/userSlice";
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
+  const dispatch = useDispatch();
 
   async function submit(e) {
     e.preventDefault();
@@ -21,9 +24,8 @@ const Login = ({ onLogin }) => {
       } else if (res.data.error === "Invalid password") {
         alert("Invalid password");
       } else if (res.data.message === "Login successful") {
-        // alert("Login successful");
-        onLogin(); // Call the onLogin function passed from App.js
-        history.push("/", { email: email });
+        dispatch(login(res.data.email));
+        history.push("/", { from: "Login" } );
       }
     } catch (err) {
       alert(err);

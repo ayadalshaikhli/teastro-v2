@@ -533,7 +533,15 @@ app.post("/auth/login", async(req, res) => {
     if (user.password !== password) {
       return res.status(401).json({ error: "Invalid password" });
     }
-    res.status(200).json({ message: "Login successful" });
+  
+    // Send Data email and user id
+    res.json({
+      message: "Login successful",
+      email: user.email,
+      id: user._id,
+    });
+
+
 
     await client.close();
 
@@ -544,7 +552,7 @@ app.post("/auth/login", async(req, res) => {
   }
 }
 )
-app.post("/auth/signup", async (req, res) => {
+app.post("/auth/register", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -570,7 +578,9 @@ app.post("/auth/signup", async (req, res) => {
     await collection.insertOne(newUser);
 
     // Successful signup
-    res.status(201).json({ message: "User created" });
+    res.status(201).json({ message: "User created", 
+    email: newUser.email,
+    id: newUser._id });
 
     // Close the MongoDB connection
     await client.close();
