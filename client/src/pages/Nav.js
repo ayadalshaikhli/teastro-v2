@@ -36,7 +36,7 @@ function Nav({ fetchUrl }) {
       <div className="logo__links text-white">
         <img
           onClick={() => history.push("/")}
-          className="website-logo"
+          className=" cursor-pointer website-logo"
           src="https://fontmeme.com/permalink/210902/ea52f9be615d012bb9369788bfdc977f.png"
           alt="netflix-font"
           border="0"
@@ -44,25 +44,25 @@ function Nav({ fetchUrl }) {
 
         <ul>
           <li
-            className="text-decoration-none"
+            className=" cursor-pointer text-decoration-none"
             onClick={() => history.push("/")}
           >
             TOP CAST
           </li>
           <li
-            className="text-decoration-none"
+            className=" cursor-pointer text-decoration-none"
             onClick={() => history.push("/mylist")}
           >
             MOVICES
           </li>
           <li
-            className="text-decoration-none"
+            className=" cursor-pointer text-decoration-none"
             onClick={() => history.push("/mylist")}
           >
             TV SHOWS
           </li>
           <li
-            className="text-decoration-none"
+            className=" cursor-pointer text-decoration-none"
             onClick={() => history.push("/scraped")}
           >
             SCRAPED
@@ -70,7 +70,7 @@ function Nav({ fetchUrl }) {
         </ul>
       </div>
       <div className="flex">
-        <div className="px-4 py-2 bg-red-700 text-white rounded-2xl">
+        <div className=" cursor-pointer px-4 py-2 bg-red-700 text-white rounded-2xl">
           Login/ Sign in
         </div>
         <div>

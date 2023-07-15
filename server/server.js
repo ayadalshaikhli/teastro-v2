@@ -1,17 +1,23 @@
-const { ApolloServer } = require("apollo-server-express");
+// const { ApolloServer } = require("apollo-server-express");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
-// const db = require('./config/connection');
+const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
 const puppeteer = require("puppeteer");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const cors = require("cors"); // Import the cors package
-
-const { typeDefs, resolvers } = require("./schemas");
+const cors = require("cors");
+const cookieParser = require("cookie-parser"); 
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
+
+// const { typeDefs, resolvers } = require("./schemas");
+const MURL = process.env.MONG_URI;
+const DBNAME = process.env.DB_NAME;
+
 app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
+
 
 app.use(
   cors({
@@ -21,28 +27,33 @@ app.use(
 
 const PORT = process.env.PORT || 5000;
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+// const server = new ApolloServer({
+//   typeDefs,
+//   resolvers,
+// });
+
+// server.applyMiddleware({ app });
+
+
+mongoose.connect( MURL).then(() => {
+  console.log("Connected to MongoDB");
+}).catch((err) => {
+  console.log(err);
 });
 
-server.applyMiddleware({ app });
 
-const filmsRoute = require("./routes/films");
-app.use("/films", filmsRoute);
-
-const postsRoute = require("./routes/posts");
-app.use("/posts", postsRoute);
+app.use("/", require('./routes/authRouters'));
 
 // Server the static assets if in production
-app.use(express.static(path.join(__dirname, "./")));
+// app.use(express.static(path.join(__dirname, "./")));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
-const MURL = process.env.MONG_URI;
-const DBNAME = process.env.DB_NAME;
+
+// const filmsRoute = require("./routes/films");
+// app.use("/films", filmsRoute);
+
+// const postsRoute = require("./routes/posts");
+// app.use("/posts", postsRoute);
 
 async function scrapeData() {
   try {
@@ -308,291 +319,289 @@ async function deleteRepeatedMovies() {
 }
 // deleteRepeatedMovies();
 
+// app.use(express.static(path.join(__dirname, "../client/build")));
 
+// app.get("/api/getList", async (req, res) => {
+//   console.log("+++++++++");
+//   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+//   console.log(req.route.path); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+//   console.log("+++++++++");
 
-app.use(express.static(path.join(__dirname, "../client/build")));
+//   const { moviename, movieyear } = req.query;
 
-app.get("/api/getList", async (req, res) => {
-  console.log("+++++++++");
-  console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-  console.log(req.route.path); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-  console.log("+++++++++");
+//   async function puppet() {
+//     // PUPPET | TRY-CATCH Error handling for remote website requests
+//     try {
+//       //PUPPET | Initialize Puppeteer
+//       const browser = await puppeteer.launch({
+//         args: [
+//           "--no-sandbox",
+//           "--disable-setuid-sandbox",
+//           "--disable-dev-shm-usage",
+//           "--enable-low-end-device-mode",
+//           "--single-process",
+//         ],
+//       });
 
-  const { moviename, movieyear } = req.query;
+//       // PUPPET | Specify an page url to open
+//       const page = await browser.newPage();
 
-  async function puppet() {
-    // PUPPET | TRY-CATCH Error handling for remote website requests
-    try {
-      //PUPPET | Initialize Puppeteer
-      const browser = await puppeteer.launch({
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--enable-low-end-device-mode",
-          "--single-process",
-        ],
-      });
+//       // PUPPET | Specify page url
+//       await page.goto(
+//         `https://mycima.actor:2083/watch/%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D8%A9-%D9%81%D9%8A%D9%84%D9%85-${moviename}-${movieyear}-%D9%85%D8%AA%D8%B1%D8%AC%D9%85/`
+//       );
 
-      // PUPPET | Specify an page url to open
-      const page = await browser.newPage();
+//       console.log("PUPPET | Page has been evaluated!");
 
-      // PUPPET | Specify page url
-      await page.goto(
-        `https://mycima.actor:2083/watch/%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D8%A9-%D9%81%D9%8A%D9%84%D9%85-${moviename}-${movieyear}-%D9%85%D8%AA%D8%B1%D8%AC%D9%85/`
-      );
+//       const data = await page.evaluate(() => {
+//         const srcs = Array.from(document.querySelectorAll("btn")).map((btn) =>
+//           btn.getAttribute("data-url")
+//         );
+//         return srcs;
+//       });
 
-      console.log("PUPPET | Page has been evaluated!");
+//       console.log("PUPPET | Puppet Strings from page have been loaded.");
+//       console.log("PUPPET RESPONSE | puppetstrings \n", data);
 
-      const data = await page.evaluate(() => {
-        const srcs = Array.from(document.querySelectorAll("btn")).map((btn) =>
-          btn.getAttribute("data-url")
-        );
-        return srcs;
-      });
+//       // End Puppeteer
+//       await browser.close();
+//       // return puppetStrings;
 
-      console.log("PUPPET | Puppet Strings from page have been loaded.");
-      console.log("PUPPET RESPONSE | puppetstrings \n", data);
+//       return [data, null];
+//     } catch (error) {
+//       console.error(error);
+//       return [null, error];
+//     }
+//   }
+//   const [data, error] = await puppet();
 
-      // End Puppeteer
-      await browser.close();
-      // return puppetStrings;
+//   res.send(JSON.stringify(data));
+// });
 
-      return [data, null];
-    } catch (error) {
-      console.error(error);
-      return [null, error];
-    }
-  }
-  const [data, error] = await puppet();
+// app.get("/api/getMovies", async (req, res) => {
+//   console.log("REQUEST | params , query , route");
+//   console.log("+++++++++");
+//   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+//   console.log(req.route.path); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+//   console.log("+++++++++");
+//   // flip arabic from left to right
 
-  res.send(JSON.stringify(data));
-});
+//   const { moviename, movieyear } = req.query;
 
-app.get("/api/getMovies", async (req, res) => {
-  console.log("REQUEST | params , query , route");
-  console.log("+++++++++");
-  console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-  console.log(req.route.path); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-  console.log("+++++++++");
-  // flip arabic from left to right
+//   async function puppet() {
+//     // PUPPET | TRY-CATCH Error handling for remote website requests
+//     try {
+//       //PUPPET | Initialize Puppeteer
+//       const browser = await puppeteer.launch({
+//         args: [
+//           "--no-sandbox",
+//           "--disable-setuid-sandbox",
+//           "--disable-dev-shm-usage",
+//           "--enable-low-end-device-mode",
+//           "--single-process",
+//         ],
+//       });
+//       // PUPPET | Specify an page url to open
+//       const page = await browser.newPage();
 
-  const { moviename, movieyear } = req.query;
+//       await page.setBypassCSP(true);
 
-  async function puppet() {
-    // PUPPET | TRY-CATCH Error handling for remote website requests
-    try {
-      //PUPPET | Initialize Puppeteer
-      const browser = await puppeteer.launch({
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--enable-low-end-device-mode",
-          "--single-process",
-        ],
-      });
-      // PUPPET | Specify an page url to open
-      const page = await browser.newPage();
+//       // PUPPET | Specify page url
+//       await page.goto(`https://mycimaa.tube/category/${moviename}/`);
+//       console.log(page, "PUPPET | Page has been evaluated!");
 
-      await page.setBypassCSP(true);
+//       const dataa = await page.evaluate(() => {
+//         const srcss = Array.from(
+//           // Select by class name
+//           document
+//             .querySelector(".Grid--MycimaPosts")
+//             .querySelectorAll(".GridItem")
+//         ).map((GridItem) => {
+//           return {
+//             src: GridItem.querySelector(".Thumb--GridItem")
+//               .querySelector("a")
+//               .getAttribute("href"),
+//             img: GridItem.querySelector(".Thumb--GridItem")
+//               .querySelector("a")
+//               .querySelector("span")
+//               .getAttribute("data-src"),
+//             title: GridItem.querySelector(".Thumb--GridItem")
+//               .querySelector("a")
+//               .querySelector("strong").innerText,
+//           };
+//         });
+//         return srcss;
+//       });
+//       // End Puppeteer
+//       await browser.close();
+//       // return puppetStrings;
+//       return [dataa, null];
+//     } catch (error) {
+//       console.error(error);
+//       return [null, error];
+//     }
+//   }
+//   const [data, error] = await puppet();
 
-      // PUPPET | Specify page url
-      await page.goto(`https://mycimaa.tube/category/${moviename}/`);
-      console.log(page, "PUPPET | Page has been evaluated!");
+//   res.send(JSON.stringify(data));
+// });
 
-      const dataa = await page.evaluate(() => {
-        const srcss = Array.from(
-          // Select by class name
-          document
-            .querySelector(".Grid--MycimaPosts")
-            .querySelectorAll(".GridItem")
-        ).map((GridItem) => {
-          return {
-            src: GridItem.querySelector(".Thumb--GridItem")
-              .querySelector("a")
-              .getAttribute("href"),
-            img: GridItem.querySelector(".Thumb--GridItem")
-              .querySelector("a")
-              .querySelector("span")
-              .getAttribute("data-src"),
-            title: GridItem.querySelector(".Thumb--GridItem")
-              .querySelector("a")
-              .querySelector("strong").innerText,
-          };
-        });
-        return srcss;
-      });
-      // End Puppeteer
-      await browser.close();
-      // return puppetStrings;
-      return [dataa, null];
-    } catch (error) {
-      console.error(error);
-      return [null, error];
-    }
-  }
-  const [data, error] = await puppet();
+// app.get("/api/hello", (req, res) => {
+//   console.log("REQUEST | params , query , route");
+//   console.log("+++++++++");
+//   console.log(req);
+//   res.send({ express: "Hello From Express" });
+// });
 
-  res.send(JSON.stringify(data));
-});
+// app.get("/api/scraped", async (req, res) => {
+//   const client = new MongoClient(MURL, {
+//     serverApi: {
+//       version: ServerApiVersion.v1,
+//       strict: true,
+//       deprecationErrors: true,
+//     },
+//   });
+//   await client.connect();
+//   await client.db(DBNAME).command({ ping: 1 });
 
-app.get("/api/hello", (req, res) => {
-  console.log("REQUEST | params , query , route");
-  console.log("+++++++++");
-  console.log(req);
-  res.send({ express: "Hello From Express" });
-});
+//   const database = client.db(DBNAME);
+//   const collection = database.collection("movies");
 
-app.get("/api/scraped", async (req, res) => {
-  const client = new MongoClient(MURL, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-  });
-  await client.connect();
-  await client.db(DBNAME).command({ ping: 1 });
+//   const data = await collection.find({}).toArray();
+//   console.log(data);
+//   res.send(JSON.stringify(data));
 
-  const database = client.db(DBNAME);
-  const collection = database.collection("movies");
+// })
 
-  const data = await collection.find({}).toArray();
-  console.log(data);
-  res.send(JSON.stringify(data));
+// app.get("/api/moviesDB/:id", async (req, res) => {
+//   const id = req.params.id;
 
-})
+//   const client = new MongoClient(MURL, {
+//     serverApi: {
+//       version: ServerApiVersion.v1,
+//       strict: true,
+//       deprecationErrors: true,
+//     },
+//   });
 
-app.get("/api/moviesDB/:id", async (req, res) => {
-  const id = req.params.id;
+//   try {
+//     await client.connect();
+//     await client.db(DBNAME).command({ ping: 1 });
 
-  const client = new MongoClient(MURL, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-  });
+//     const database = client.db(DBNAME);
+//     const collection = database.collection("movies");
 
-  try {
-    await client.connect();
-    await client.db(DBNAME).command({ ping: 1 });
+//     const data = await collection.findOne({ _id: new ObjectId(id) });
+//     console.log(data);
+//     res.json(data);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "An error occurred" });
+//   } finally {
+//     await client.close();
+//   }
+// });
 
-    const database = client.db(DBNAME);
-    const collection = database.collection("movies");
+// app.get("*", (req, res) => {
+//   res.sendStatus;
+// });
 
-    const data = await collection.findOne({ _id: new ObjectId(id) });
-    console.log(data);
-    res.json(data);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "An error occurred" });
-  } finally {
-    await client.close();
-  }
-});
+// app.get("/barfoo", (req, res) => {
+//   console.log("+++++++++");
+//   console.log("REQUEST | params , query , route");
+//   console.log(req.body);
+//   console.log(req.params); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+//   console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
+//   console.log("+++++++++");
 
-app.get("*", (req, res) => {
-  res.sendStatus;
-});
+//   console.log("Sent list of items");
+//   res.sendStatus;
+// });
 
-app.get("/barfoo", (req, res) => {
-  console.log("+++++++++");
-  console.log("REQUEST | params , query , route");
-  console.log(req.body);
-  console.log(req.params); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-  console.log(req.query); // /lor/creatures/hobbit?familyname=Baggins&home=Shire
-  console.log("+++++++++");
+// app.post("/auth/login", async(req, res) => {
+//   const {email, password} = req.body;
+//   try{
+//     // Mongodb connection
+//     const client = new MongoClient(MURL, {
+//       serverApi: {
+//         version: ServerApiVersion.v1,
+//         strict: true,
+//         deprecationErrors: true,
+//       },
+//     });
+//     await client.connect();
+//     await client.db(DBNAME).command({ ping: 1 });
 
-  console.log("Sent list of items");
-  res.sendStatus;
-});
+//     const database = client.db(DBNAME);
+//     const collection = database.collection("users");
 
-app.post("/auth/login", async(req, res) => {
-  const {email, password} = req.body;
-  try{
-    // Mongodb connection
-    const client = new MongoClient(MURL, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-    });
-    await client.connect();
-    await client.db(DBNAME).command({ ping: 1 });
-
-    const database = client.db(DBNAME);
-    const collection = database.collection("users");
-
-    const user = await collection.findOne({email: email});
-    if(!user) {
-      return res.status(400).json({error: "User does not exist"});
-    }
-    if (user.password !== password) {
-      return res.status(401).json({ error: "Invalid password" });
-    }
+//     const user = await collection.findOne({email: email});
+//     if(!user) {
+//       return res.status(400).json({error: "User does not exist"});
+//     }
+//     if (user.password !== password) {
+//       return res.status(401).json({ error: "Invalid password" });
+//     }
   
-    // Send Data email and user id
-    res.json({
-      message: "Login successful",
-      email: user.email,
-      id: user._id,
-    });
+//     // Send Data email and user id
+//     res.json({
+//       message: "Login successful",
+//       email: user.email,
+//       id: user._id,
+//     });
 
 
 
-    await client.close();
+//     await client.close();
 
     
-  } catch(err) {
-    console.log(err);
-    res.status(500).json({ error: "An error occurred" });
-  }
-}
-)
-app.post("/auth/register", async (req, res) => {
-  const { email, password } = req.body;
+//   } catch(err) {
+//     console.log(err);
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// }
+// )
+// app.post("/auth/register", async (req, res) => {
+//   const { email, password } = req.body;
 
-  try {
-    const client = new MongoClient(MURL);
-    await client.connect();
+//   try {
+//     const client = new MongoClient(MURL);
+//     await client.connect();
 
-    const database = client.db(DBNAME);
-    const collection = database.collection("users");
+//     const database = client.db(DBNAME);
+//     const collection = database.collection("users");
 
-    // Check if the user already exists in the database
-    const existingUser = await collection.findOne({ email });
+//     // Check if the user already exists in the database
+//     const existingUser = await collection.findOne({ email });
 
-    if (existingUser) {
-      return res.status(409).json({ error: "User already exists" });
-    }
+//     if (existingUser) {
+//       return res.status(409).json({ error: "User already exists" });
+//     }
 
-    // Create a new user
-    const newUser = {
-      email,
-      password,
-    };
+//     // Create a new user
+//     const newUser = {
+//       email,
+//       password,
+//     };
 
-    await collection.insertOne(newUser);
+//     await collection.insertOne(newUser);
 
-    // Successful signup
-    res.status(201).json({ message: "User created", 
-    email: newUser.email,
-    id: newUser._id });
+//     // Successful signup
+//     res.status(201).json({ message: "User created", 
+//     email: newUser.email,
+//     id: newUser._id });
 
-    // Close the MongoDB connection
-    await client.close();
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
+//     // Close the MongoDB connection
+//     await client.close();
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/build")));
-}
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../client/build")));
+// }
 
 app.listen(PORT, () => {
   console.log(`API server running on port: http://localhost:${PORT}`);

@@ -20,13 +20,10 @@ const Home = () => {
   const matchupList = data?.matchups || [];
   console.table(matchupList);
 
-  const location = useLocation();
-  const email = location.state && location.state.email;
+
 
   return (
     <div className="home__page overflow-hidden">
-      <h1 className="text-white"> Hello {email} Me </h1>
-     
       <Banner />
       <Row
         title="Movie Trending"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import toast, { Toaster } from 'react-hot-toast';
 import Delete from './pages/Delete';
 import Foobar from './pages/Foobar';
 import Home from './pages/Home';
@@ -15,17 +16,16 @@ import Nav from "./pages/Nav";
 import requests from "./pages/requests";
 import NotFound from './pages/NotFound';
 import Vote from './pages/Vote';
-import "./App.css";
 import Pup from './pages/Pup';
 import MoviesDB from './pages/MoviesDB';
 import ScrapedData from './pages/Scraping/ScrapedData';
 import MoviesList from './pages/Movies/MoviesList';
-import Login from './pages/components/Login';
-import Signup from './pages/components/Signup';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from './features/userSlice';
 import ProfileScreen from './screens/ProfileScreen';
 import LoginScreen from './screens/LoginScreen';
+import "./App.css";
+import axios from 'axios';
 
 
 
@@ -34,28 +34,43 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+axios.defaults.withCredentials = true;
+
 function App() {
 
-
- 
   const dispatch = useDispatch();
+  useEffect(() => {
+    // Retrieve user information from local storage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      dispatch(login(user));
+    }
+  }, [dispatch]);
+
   const user = useSelector((state) => state.user.user);
-  console.log(user);
-
-
-
-
 
   return (
     <ApolloProvider client={client}>
+      <Toaster
+              position="bottom-right"
+              reverseOrder={false}
+              toastOptions={{
+                style: {
+                  fontSize: '14px',
+                },
+              }}
+            />
       <Router>
         {!user ? (
           <Switch>
+            
             <LoginScreen />
           </Switch>
         ) : (
           <>
             <Nav />
+           
             <Switch>
               <Route path="/profile" >
                 <ProfileScreen />
