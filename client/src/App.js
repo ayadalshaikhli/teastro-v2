@@ -64,17 +64,14 @@ function App() {
       <Router>
         {!user ? (
           <Switch>
-            
             <LoginScreen />
           </Switch>
         ) : (
           <>
             <Nav />
-           
             <Switch>
-              <Route path="/profile" >
-                <ProfileScreen />
-              </Route>
+              <Route path="/profile" component={ProfileScreen} />
+              
               <Route path="/movie/:id" component={MovieDetail} />
               <Route path="/movies/:id" component={Pup} />
               <Route path="/tv/:id" component={TvDetail} />

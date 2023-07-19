@@ -1,29 +1,29 @@
 // const { ApolloServer } = require("apollo-server-express");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const cors = require("cors");
 const cookieParser = require("cookie-parser"); 
-
+const envPath = path.resolve(__dirname, '../server/.env');
+require('dotenv').config({ path: envPath });
 const app = express();
 
 // const { typeDefs, resolvers } = require("./schemas");
 const MURL = process.env.MONG_URI;
 const DBNAME = process.env.DB_NAME;
-
+console.log(MURL, DBNAME);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:5001"]
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "http://localhost:5001"]
+//   })
+// );
 
 const PORT = process.env.PORT || 5000;
 
@@ -35,10 +35,10 @@ const PORT = process.env.PORT || 5000;
 // server.applyMiddleware({ app });
 
 
-mongoose.connect( MURL).then(() => {
+mongoose.connect(MURL).then(() => {
   console.log("Connected to MongoDB");
 }).catch((err) => {
-  console.log(err);
+  console.log(err, "Not Connected to MongoDB");
 });
 
 

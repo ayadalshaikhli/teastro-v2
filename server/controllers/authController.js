@@ -48,14 +48,14 @@ const loginUser = async (req, res) => {
         }
         // Check if password was entered
         const passwordMatch = await comaparePassword(password, user.password);
-        if (!passwordMatch) {
-            return res.json({ error: "Invalid password" });
+        if (passwordMatch){
+            jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' }, (err, token) => {
+                if (err) throw err;
+                
+                res.cookie('token', token).json(user)
+            }
+            );
         }
-        // Create token
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-        // Return user and token to client, exclude hashed password
-        user.password = undefined;
-        return res.json({ user, token });
         
 
     }
@@ -64,11 +64,27 @@ const loginUser = async (req, res) => {
     }
 }
 
+const getProfile = async (req, res) => {
+    const {token} = req.cookies;
+    if(token){
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, user) => {
+            if(err){
+                return res.json({error: "You need to login"})
+            }
+            res.json(user)
+        }
+        )
+    } else {
+        res.json(null)
+    }
+    
 
+}
 
 
 module.exports = {
     test,
     registerUser,
-    loginUser
+    loginUser,
+    getProfile
 }
