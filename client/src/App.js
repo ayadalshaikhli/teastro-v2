@@ -48,7 +48,7 @@ function App() {
     }
   }, [dispatch]);
 
-  const user = useSelector((state) => state.user.user);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   return (
     <ApolloProvider client={client}>
@@ -62,7 +62,7 @@ function App() {
               }}
             />
       <Router>
-        {!user ? (
+      {!isLoggedIn ? ( // Use 'isLoggedIn' to check if the user is logged in
           <Switch>
             <LoginScreen />
           </Switch>

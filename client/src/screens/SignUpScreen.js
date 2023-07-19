@@ -40,6 +40,7 @@ function SignUpScreen() {
       );
   }
 
+  
   const signIn = (e) => {
     e.preventDefault();
     const loginUser = {
@@ -57,9 +58,9 @@ function SignUpScreen() {
           alert('Invalid password');
         } else if (res.data.message === 'Login successful') {
           console.log(res.data.email, res.data.id);
-          dispatch(login(res.data.email));
+          dispatch(login(res.data.email)); // Dispatch the login action with the user data
 
-          // Save user information to local storage
+          // Save user information to local storage (optional)
           localStorage.setItem('user', JSON.stringify(res.data.email));
         }
       })
