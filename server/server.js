@@ -18,11 +18,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-// app.use(
-//   cors({
-//     origin: ["https://tea-tro.netlify.app"],
-//   })
-// );
+app.use(
+  cors({
+    origin: ["https://tea-tro.netlify.app"],
+  })
+);
 
 const PORT = process.env.PORT || 5000;
 
@@ -491,8 +491,7 @@ app.get("/api/scraped", async (req, res) => {
   const data = await collection.find({}).toArray();
   console.log(data);
   res.send(JSON.stringify(data));
-
-})
+});
 
 app.get("/api/moviesDB/:id", async (req, res) => {
   const id = req.params.id;
@@ -539,9 +538,9 @@ app.get("/barfoo", (req, res) => {
   res.sendStatus;
 });
 
-app.post("/auth/login", async(req, res) => {
-  const {email, password} = req.body;
-  try{
+app.post("/auth/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
     // Mongodb connection
     const client = new MongoClient(MURL, {
       serverApi: {
@@ -556,9 +555,9 @@ app.post("/auth/login", async(req, res) => {
     const database = client.db(DBNAME);
     const collection = database.collection("users");
 
-    const user = await collection.findOne({email: email});
-    if(!user) {
-      return res.status(400).json({error: "User does not exist"});
+    const user = await collection.findOne({ email: email });
+    if (!user) {
+      return res.status(400).json({ error: "User does not exist" });
     }
     if (user.password !== password) {
       return res.status(401).json({ error: "Invalid password" });
@@ -572,13 +571,11 @@ app.post("/auth/login", async(req, res) => {
     });
 
     await client.close();
-
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({ error: "An error occurred" });
   }
-}
-)
+});
 app.post("/auth/register", async (req, res) => {
   const { email, password } = req.body;
 
@@ -605,9 +602,9 @@ app.post("/auth/register", async (req, res) => {
     await collection.insertOne(newUser);
 
     // Successful signup
-    res.status(201).json({ message: "User created",
-    email: newUser.email,
-    id: newUser._id });
+    res
+      .status(201)
+      .json({ message: "User created", email: newUser.email, id: newUser._id });
 
     // Close the MongoDB connection
     await client.close();
