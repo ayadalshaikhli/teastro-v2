@@ -42,7 +42,7 @@ mongoose
     console.log(err, "Not Connected to MongoDB");
   });
 
-app.use("/", require("./routes/authRouters"));
+// app.use("/", require("./routes/authRouters"));
 
 // Server the static assets if in production
 // app.use(express.static(path.join(__dirname, "./")));
