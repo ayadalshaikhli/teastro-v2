@@ -5,9 +5,9 @@ const express = require("express");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const cors = require("cors");
-const cookieParser = require("cookie-parser"); 
-const envPath = path.resolve(__dirname, '../server/.env');
-require('dotenv').config({ path: envPath });
+const cookieParser = require("cookie-parser");
+const envPath = path.resolve(__dirname, "../server/.env");
+require("dotenv").config({ path: envPath });
 const app = express();
 
 // const { typeDefs, resolvers } = require("./schemas");
@@ -18,12 +18,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-
-// app.use(
-//   cors({
-//     origin: ["http://localhost:3000", "http://localhost:5001"]
-//   })
-// );
+app.use(
+  cors({
+    origin: ["https://tea-tro.netlify.app/"],
+  })
+);
 
 const PORT = process.env.PORT || 5000;
 
@@ -34,20 +33,19 @@ const PORT = process.env.PORT || 5000;
 
 // server.applyMiddleware({ app });
 
+mongoose
+  .connect(MURL)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.log(err, "Not Connected to MongoDB");
+  });
 
-mongoose.connect(MURL).then(() => {
-  console.log("Connected to MongoDB");
-}).catch((err) => {
-  console.log(err, "Not Connected to MongoDB");
-});
-
-
-app.use("/", require('./routes/authRouters'));
+app.use("/", require("./routes/authRouters"));
 
 // Server the static assets if in production
 // app.use(express.static(path.join(__dirname, "./")));
-
-
 
 // const filmsRoute = require("./routes/films");
 // app.use("/films", filmsRoute);
@@ -116,15 +114,22 @@ async function addDataInDB() {
           const srcs = Array.from(
             document.querySelectorAll(".Grid--WecimaPosts .GridItem")
           ).map((GridItem) => {
-            const imgElement = GridItem.querySelector(".Thumb--GridItem a span");
-            const imgStyle = imgElement ? imgElement.getAttribute("style") : null;
+            const imgElement = GridItem.querySelector(
+              ".Thumb--GridItem a span"
+            );
+            const imgStyle = imgElement
+              ? imgElement.getAttribute("style")
+              : null;
             const imgRegex = /--image:url\(([^)]+)\);/;
             const imgMatch = imgStyle ? imgStyle.match(imgRegex) : null;
             const img = imgMatch ? imgMatch[1] : "";
             return {
-              src: GridItem.querySelector(".Thumb--GridItem a").getAttribute("href"),
+              src: GridItem.querySelector(".Thumb--GridItem a").getAttribute(
+                "href"
+              ),
               img,
-              title: GridItem.querySelector(".Thumb--GridItem a strong").innerText,
+              title: GridItem.querySelector(".Thumb--GridItem a strong")
+                .innerText,
             };
           });
           return srcs;
@@ -137,7 +142,8 @@ async function addDataInDB() {
         return null;
       }
     }
-    const baseUrl = "https://mycima4.wecima.cam/category/%D8%A7%D9%81%D9%84%D8%A7%D9%85/page/";
+    const baseUrl =
+      "https://mycima4.wecima.cam/category/%D8%A7%D9%81%D9%84%D8%A7%D9%85/page/";
     for (let i = 1; i <= 1; i++) {
       const pageUrl = `${baseUrl}${i}/`;
       const data = await puppet(pageUrl);
@@ -154,7 +160,10 @@ async function addDataInDB() {
             const updateFields = {};
             const fieldsToCompare = ["src", "img"];
             fieldsToCompare.forEach((field) => {
-              if (item.hasOwnProperty(field) && existingItem[field] !== item[field]) {
+              if (
+                item.hasOwnProperty(field) &&
+                existingItem[field] !== item[field]
+              ) {
                 updateFields[field] = item[field];
               }
             });
@@ -190,7 +199,9 @@ async function movieDetailsFetch() {
     });
     await client.connect();
     await client.db(DBNAME).command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
 
     const database = client.db(DBNAME);
     const collection = database.collection("movies");
@@ -201,7 +212,11 @@ async function movieDetailsFetch() {
     let totalCount = 0;
 
     do {
-      movies = await collection.find({}).skip((page - 1) * pageSize).limit(pageSize).toArray();
+      movies = await collection
+        .find({})
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
+        .toArray();
       totalCount += movies.length;
 
       const browser = await puppeteer.launch({
@@ -223,7 +238,9 @@ async function movieDetailsFetch() {
             await page.goto(movie.src);
 
             const data = await page.evaluate(() => {
-              const srcs = Array.from(document.querySelectorAll("btn")).map(btn => btn.getAttribute("data-url"));
+              const srcs = Array.from(document.querySelectorAll("btn")).map(
+                (btn) => btn.getAttribute("data-url")
+              );
               return srcs;
             });
 
@@ -278,7 +295,9 @@ async function deleteRepeatedMovies() {
     });
     await client.connect();
     await client.db(DBNAME).command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
     const database = client.db(DBNAME);
     const collection = database.collection("movies");
 
@@ -306,7 +325,9 @@ async function deleteRepeatedMovies() {
       for (const duplicate of duplicates) {
         const [first, ...rest] = duplicate.duplicates;
         await collection.deleteMany({ _id: { $in: rest } });
-        console.log(`Deleted ${rest.length} duplicates of movie "${duplicate._id}"`);
+        console.log(
+          `Deleted ${rest.length} duplicates of movie "${duplicate._id}"`
+        );
       }
     } else {
       console.log("No duplicate movies found.");
@@ -542,7 +563,7 @@ async function deleteRepeatedMovies() {
 //     if (user.password !== password) {
 //       return res.status(401).json({ error: "Invalid password" });
 //     }
-  
+
 //     // Send Data email and user id
 //     res.json({
 //       message: "Login successful",
@@ -550,11 +571,8 @@ async function deleteRepeatedMovies() {
 //       id: user._id,
 //     });
 
-
-
 //     await client.close();
 
-    
 //   } catch(err) {
 //     console.log(err);
 //     res.status(500).json({ error: "An error occurred" });
@@ -587,7 +605,7 @@ async function deleteRepeatedMovies() {
 //     await collection.insertOne(newUser);
 
 //     // Successful signup
-//     res.status(201).json({ message: "User created", 
+//     res.status(201).json({ message: "User created",
 //     email: newUser.email,
 //     id: newUser._id });
 
