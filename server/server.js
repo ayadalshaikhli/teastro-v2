@@ -13,7 +13,6 @@ const app = express();
 // const { typeDefs, resolvers } = require("./schemas");
 const MURL = process.env.MONG_URI;
 const DBNAME = process.env.DB_NAME;
-console.log(MURL, DBNAME);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
@@ -33,14 +32,14 @@ const PORT = process.env.PORT || 5000;
 
 // server.applyMiddleware({ app });
 
-mongoose
-  .connect(MURL)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.log(err, "Not Connected to MongoDB");
-  });
+// mongoose
+//   .connect(MURL)
+//   .then(() => {
+//     console.log("Connected to MongoDB");
+//   })
+//   .catch((err) => {
+//     console.log(err, "Not Connected to MongoDB");
+//   });
 
 // app.use("/", require("./routes/authRouters"));
 
@@ -538,88 +537,87 @@ app.get("/barfoo", (req, res) => {
   res.sendStatus;
 });
 
-app.post("/auth/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    // Mongodb connection
-    const client = new MongoClient(MURL, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-    });
-    await client.connect();
-    await client.db(DBNAME).command({ ping: 1 });
+// app.post("/auth/login", async (req, res) => {
+//   const { email, password } = req.body;
+//   try {
+//     // Mongodb connection
+//     const client = new MongoClient(MURL, {
+//       serverApi: {
+//         version: ServerApiVersion.v1,
+//         strict: true,
+//         deprecationErrors: true,
+//       },
+//     });
+//     await client.connect();
+//     await client.db(DBNAME).command({ ping: 1 });
 
-    const database = client.db(DBNAME);
-    const collection = database.collection("users");
+//     const database = client.db(DBNAME);
+//     const collection = database.collection("users");
 
-    const user = await collection.findOne({ email: email });
-    if (!user) {
-      return res.status(400).json({ error: "User does not exist" });
-    }
-    if (user.password !== password) {
-      return res.status(401).json({ error: "Invalid password" });
-    }
+//     const user = await collection.findOne({ email: email });
+//     if (!user) {
+//       return res.status(400).json({ error: "User does not exist" });
+//     }
+//     if (user.password !== password) {
+//       return res.status(401).json({ error: "Invalid password" });
+//     }
 
-    // Send Data email and user id
-    res.json({
-      message: "Login successful",
-      email: user.email,
-      id: user._id,
-    });
+//     // Send Data email and user id
+//     res.json({
+//       message: "Login successful",
+//       email: user.email,
+//       id: user._id,
+//     });
 
-    await client.close();
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
-app.post("/auth/register", async (req, res) => {
-  const { email, password } = req.body;
+//     await client.close();
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// });
+// app.post("/auth/register", async (req, res) => {
+//   const { email, password } = req.body;
 
-  try {
-    const client = new MongoClient(MURL);
-    await client.connect();
+//   try {
+//     const client = new MongoClient(MURL);
+//     await client.connect();
 
-    const database = client.db(DBNAME);
-    const collection = database.collection("users");
+//     const database = client.db(DBNAME);
+//     const collection = database.collection("users");
 
-    // Check if the user already exists in the database
-    const existingUser = await collection.findOne({ email });
+//     // Check if the user already exists in the database
+//     const existingUser = await collection.findOne({ email });
 
-    if (existingUser) {
-      return res.status(409).json({ error: "User already exists" });
-    }
+//     if (existingUser) {
+//       return res.status(409).json({ error: "User already exists" });
+//     }
 
-    // Create a new user
-    const newUser = {
-      email,
-      password,
-    };
+//     // Create a new user
+//     const newUser = {
+//       email,
+//       password,
+//     };
 
-    await collection.insertOne(newUser);
+//     await collection.insertOne(newUser);
 
-    // Successful signup
-    res
-      .status(201)
-      .json({ message: "User created", email: newUser.email, id: newUser._id });
+//     // Successful signup
+//     res
+//       .status(201)
+//       .json({ message: "User created", email: newUser.email, id: newUser._id });
 
-    // Close the MongoDB connection
-    await client.close();
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
+//     // Close the MongoDB connection
+//     await client.close();
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "An error occurred" });
+//   }
+// });
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
 }
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`API server running on port: http://localhost:${PORT}`);
-  // log where we can go to test our GQL API
-  // console.log(`Use GraphQL at: http://localhost:${PORT}${server.graphqlPath}`);
+
 });
